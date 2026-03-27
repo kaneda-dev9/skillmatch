@@ -1,5 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { LogOut } from "lucide-react";
 import { logout } from "@/actions/auth";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,8 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
 
 export async function Header() {
   const supabase = await createClient();

@@ -1,15 +1,8 @@
 "use client";
 
+import { Briefcase, FileText, LayoutDashboard, Settings, Target, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  Briefcase,
-  Target,
-  FileText,
-  Settings,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
