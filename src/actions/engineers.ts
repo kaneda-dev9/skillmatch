@@ -202,8 +202,8 @@ export async function uploadFile(formData: FormData) {
   const file = formData.get("file") as File
   if (!file) return { error: "ファイルが選択されていません" }
 
-  const safeName = encodeURIComponent(file.name)
-  const filePath = `${profile.org_id}/${crypto.randomUUID()}/${safeName}`
+  const ext = file.name.split(".").pop() ?? "bin"
+  const filePath = `${profile.org_id}/${crypto.randomUUID()}/document.${ext}`
   const { error } = await supabase.storage.from("documents").upload(filePath, file)
 
   if (error) return { error: error.message }
