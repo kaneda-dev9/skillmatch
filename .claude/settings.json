@@ -2,5 +2,21 @@
   "enabledPlugins": {
     "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/scripts/ci-watch.sh",
+            "if": "Bash(git push:*)",
+            "timeout": 360,
+            "statusMessage": "CI を監視中..."
+          }
+        ]
+      }
+    ]
   }
 }
