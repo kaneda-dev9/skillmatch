@@ -48,13 +48,12 @@ export async function Header() {
           </DropdownMenuItem>
           <form action={logout}>
             <DropdownMenuItem
-              render={
-                <button type="submit" className="w-full cursor-pointer">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  ログアウト
-                </button>
-              }
-            />
+              nativeButton
+              render={<button type="submit" className="w-full cursor-pointer" />}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              ログアウト
+            </DropdownMenuItem>
           </form>
         </DropdownMenuContent>
       </DropdownMenu>
