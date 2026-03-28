@@ -68,7 +68,7 @@ export async function createEngineer(formData: FormData) {
       name: engineerData.name,
       email: engineerData.email,
       skills: engineerData.skills,
-      experience_years: engineerData.experience_years,
+      experience_years: Math.round(engineerData.experience_years),
       industries: engineerData.industries,
       availability: engineerData.availability,
       soft_skills: engineerData.soft_skills,
