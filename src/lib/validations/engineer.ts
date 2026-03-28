@@ -1,18 +1,5 @@
 import { z } from "zod/v4"
-
-const skillSchema = z.object({
-  name: z.string().min(1),
-  level: z.enum(["beginner", "intermediate", "advanced", "expert"]),
-  years: z.number().min(0),
-})
-
-const availabilitySchema = z.object({
-  rate_min: z.number().nullable().default(null),
-  rate_max: z.number().nullable().default(null),
-  start_date: z.string().nullable().default(null),
-  remote: z.boolean().default(false),
-  location: z.string().nullable().default(null),
-})
+import { AVAILABILITY_DEFAULTS, availabilitySchema, skillSchema } from "./shared"
 
 const softSkillSchema = z.object({
   name: z.string().min(1),
@@ -25,24 +12,36 @@ export const engineerFormSchema = z.object({
   skills: z.array(skillSchema).default([]),
   experience_years: z.number().min(0).default(0),
   industries: z.array(z.string()).default([]),
-  availability: availabilitySchema.default({
-    rate_min: null,
-    rate_max: null,
-    start_date: null,
-    remote: false,
-    location: null,
-  }),
+  availability: availabilitySchema.default(AVAILABILITY_DEFAULTS),
   soft_skills: z.array(softSkillSchema).default([]),
+})
+
+// AI 出力用スキーマ（Anthropic API が minimum/minLength 非対応のため制約なし）
+const parseSkillSchema = z.object({
+  name: z.string(),
+  level: z.enum(["beginner", "intermediate", "advanced", "expert"]),
+  years: z.number(),
+})
+
+const parseSoftSkillSchema = z.object({
+  name: z.string(),
+  description: z.string().nullable(),
 })
 
 export const engineerParseSchema = z.object({
   name: z.string(),
   email: z.string().nullable(),
-  skills: z.array(skillSchema),
+  skills: z.array(parseSkillSchema),
   experience_years: z.number(),
   industries: z.array(z.string()),
-  availability: availabilitySchema,
-  soft_skills: z.array(softSkillSchema),
+  availability: z.object({
+    rate_min: z.number().nullable(),
+    rate_max: z.number().nullable(),
+    start_date: z.string().nullable(),
+    remote: z.boolean(),
+    location: z.string().nullable(),
+  }),
+  soft_skills: z.array(parseSoftSkillSchema),
 })
 
 export type EngineerFormData = z.infer<typeof engineerFormSchema>

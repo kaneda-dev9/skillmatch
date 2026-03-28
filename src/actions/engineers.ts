@@ -29,7 +29,8 @@ export async function parseDocument(formData: FormData) {
     const buffer = Buffer.from(await file.arrayBuffer())
     const { data, rawText } = await parseDocumentWithAI(buffer, file.type, file.name)
     return { data, rawText, fileName: file.name, fileType: file.type }
-  } catch {
+  } catch (e) {
+    console.error("[parseDocument] 解析エラー:", e)
     return { error: "ファイルの解析に失敗しました。手動で入力してください。" }
   }
 }
@@ -67,7 +68,7 @@ export async function createEngineer(formData: FormData) {
       name: engineerData.name,
       email: engineerData.email,
       skills: engineerData.skills,
-      experience_years: engineerData.experience_years,
+      experience_years: Math.round(engineerData.experience_years),
       industries: engineerData.industries,
       availability: engineerData.availability,
       soft_skills: engineerData.soft_skills,
@@ -202,7 +203,8 @@ export async function uploadFile(formData: FormData) {
   const file = formData.get("file") as File
   if (!file) return { error: "ファイルが選択されていません" }
 
-  const filePath = `${profile.org_id}/${crypto.randomUUID()}/${file.name}`
+  const ext = file.name.split(".").pop() ?? "bin"
+  const filePath = `${profile.org_id}/${crypto.randomUUID()}/document.${ext}`
   const { error } = await supabase.storage.from("documents").upload(filePath, file)
 
   if (error) return { error: error.message }
