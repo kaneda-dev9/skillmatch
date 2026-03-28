@@ -1,4 +1,4 @@
-import { EngineerForm } from "../_components/engineer-form";
+import { EngineerForm } from "../_components/engineer-form"
 
 export default function NewEngineerPage() {
   return (
@@ -6,5 +6,5 @@ export default function NewEngineerPage() {
       <h1 className="text-2xl font-bold">エンジニア登録</h1>
       <EngineerForm mode="create" />
     </div>
-  );
+  )
 }

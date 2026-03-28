@@ -1,10 +1,10 @@
-import { z } from "zod/v4";
+import { z } from "zod/v4"
 
 const skillSchema = z.object({
   name: z.string().min(1),
   level: z.enum(["beginner", "intermediate", "advanced", "expert"]),
   years: z.number().min(0),
-});
+})
 
 const availabilitySchema = z.object({
   rate_min: z.number().nullable().default(null),
@@ -12,12 +12,12 @@ const availabilitySchema = z.object({
   start_date: z.string().nullable().default(null),
   remote: z.boolean().default(false),
   location: z.string().nullable().default(null),
-});
+})
 
 const softSkillSchema = z.object({
   name: z.string().min(1),
   description: z.string().nullable().default(null),
-});
+})
 
 export const engineerFormSchema = z.object({
   name: z.string().min(1, "名前は必須です"),
@@ -33,7 +33,7 @@ export const engineerFormSchema = z.object({
     location: null,
   }),
   soft_skills: z.array(softSkillSchema).default([]),
-});
+})
 
 export const engineerParseSchema = z.object({
   name: z.string(),
@@ -43,7 +43,7 @@ export const engineerParseSchema = z.object({
   industries: z.array(z.string()),
   availability: availabilitySchema,
   soft_skills: z.array(softSkillSchema),
-});
+})
 
-export type EngineerFormData = z.infer<typeof engineerFormSchema>;
-export type EngineerParseData = z.infer<typeof engineerParseSchema>;
+export type EngineerFormData = z.infer<typeof engineerFormSchema>
+export type EngineerParseData = z.infer<typeof engineerParseSchema>

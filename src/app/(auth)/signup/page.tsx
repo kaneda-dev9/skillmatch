@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { useState } from "react";
-import { signup } from "@/actions/auth";
-import { Button } from "@/components/ui/button";
+import Link from "next/link"
+import { useState } from "react"
+import { signup } from "@/actions/auth"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -11,21 +11,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function SignupPage() {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
   async function handleSubmit(formData: FormData) {
-    setPending(true);
-    setError(null);
-    const result = await signup(formData);
+    setPending(true)
+    setError(null)
+    const result = await signup(formData)
     if (result?.error) {
-      setError(result.error);
-      setPending(false);
+      setError(result.error)
+      setPending(false)
     }
   }
 
@@ -64,5 +64,5 @@ export default function SignupPage() {
         </p>
       </CardFooter>
     </Card>
-  );
+  )
 }

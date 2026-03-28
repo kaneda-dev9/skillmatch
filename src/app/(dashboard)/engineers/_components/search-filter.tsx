@@ -1,28 +1,28 @@
-"use client";
+"use client"
 
-import { Search, X } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Search, X } from "lucide-react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 export function SearchFilter() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [query, setQuery] = useState(searchParams.get("q") ?? "");
-  const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remote") === "true");
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [query, setQuery] = useState(searchParams.get("q") ?? "")
+  const [remoteOnly, setRemoteOnly] = useState(searchParams.get("remote") === "true")
 
   function handleSearch() {
-    const params = new URLSearchParams();
-    if (query) params.set("q", query);
-    if (remoteOnly) params.set("remote", "true");
-    router.push(`/engineers?${params.toString()}`);
+    const params = new URLSearchParams()
+    if (query) params.set("q", query)
+    if (remoteOnly) params.set("remote", "true")
+    router.push(`/engineers?${params.toString()}`)
   }
 
   function handleClear() {
-    setQuery("");
-    setRemoteOnly(false);
-    router.push("/engineers");
+    setQuery("")
+    setRemoteOnly(false)
+    router.push("/engineers")
   }
 
   return (
@@ -55,5 +55,5 @@ export function SearchFilter() {
         </Button>
       )}
     </div>
-  );
+  )
 }

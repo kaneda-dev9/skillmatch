@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { buildEmbeddingText } from "./embedding";
+import { describe, expect, it } from "vitest"
+import { buildEmbeddingText } from "./embedding"
 
 describe("buildEmbeddingText", () => {
   it("エンジニア情報からEmbedding用テキストを生成する", () => {
@@ -19,12 +19,12 @@ describe("buildEmbeddingText", () => {
         location: null,
       },
       soft_skills: [{ name: "リーダーシップ", description: null }],
-    };
-    const text = buildEmbeddingText(engineer);
-    expect(text).toContain("TypeScript");
-    expect(text).toContain("React");
-    expect(text).toContain("金融");
-    expect(text).toContain("リーダーシップ");
-    expect(text).toContain("リモート可");
-  });
-});
+    }
+    const text = buildEmbeddingText(engineer)
+    expect(text).toContain("TypeScript")
+    expect(text).toContain("React")
+    expect(text).toContain("金融")
+    expect(text).toContain("リーダーシップ")
+    expect(text).toContain("リモート可")
+  })
+})

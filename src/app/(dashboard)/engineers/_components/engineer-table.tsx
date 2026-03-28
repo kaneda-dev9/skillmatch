@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -9,11 +9,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import type { Engineer } from "@/types";
+} from "@/components/ui/table"
+import type { Engineer } from "@/types"
 
 interface EngineerTableProps {
-  engineers: Engineer[];
+  engineers: Engineer[]
 }
 
 export function EngineerTable({ engineers }: EngineerTableProps) {
@@ -25,7 +25,7 @@ export function EngineerTable({ engineers }: EngineerTableProps) {
           エンジニアを登録する
         </Link>
       </div>
-    );
+    )
   }
 
   return (
@@ -71,5 +71,5 @@ export function EngineerTable({ engineers }: EngineerTableProps) {
         ))}
       </TableBody>
     </Table>
-  );
+  )
 }

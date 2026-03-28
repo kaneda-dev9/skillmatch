@@ -1,18 +1,18 @@
-"use client";
+"use client"
 
-import type { Document } from "@/types";
+import type { Document } from "@/types"
 
 interface FilePreviewProps {
-  document: Document | null;
-  storageUrl: string;
+  document: Document | null
+  storageUrl: string
 }
 
 export function FilePreview({ document, storageUrl }: FilePreviewProps) {
   if (!document) {
-    return <p className="text-sm text-muted-foreground">ファイルがアップロードされていません</p>;
+    return <p className="text-sm text-muted-foreground">ファイルがアップロードされていません</p>
   }
 
-  const fileUrl = `${storageUrl}/storage/v1/object/public/documents/${document.file_path}`;
+  const fileUrl = `${storageUrl}/storage/v1/object/public/documents/${document.file_path}`
 
   if (document.file_type === "application/pdf") {
     return (
@@ -23,7 +23,7 @@ export function FilePreview({ document, storageUrl }: FilePreviewProps) {
           title={document.file_name}
         />
       </div>
-    );
+    )
   }
 
   // Word/Excel はダウンロードリンク + テキスト表示
@@ -42,5 +42,5 @@ export function FilePreview({ document, storageUrl }: FilePreviewProps) {
         </pre>
       )}
     </div>
-  );
+  )
 }

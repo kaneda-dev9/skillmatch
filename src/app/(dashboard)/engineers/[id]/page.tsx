@@ -1,36 +1,36 @@
-import { ArrowLeft, Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { deleteEngineer } from "@/actions/engineers";
-import { Button } from "@/components/ui/button";
-import { createClient } from "@/lib/supabase/server";
-import { EngineerDetail } from "../_components/engineer-detail";
+import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { notFound } from "next/navigation"
+import { deleteEngineer } from "@/actions/engineers"
+import { Button } from "@/components/ui/button"
+import { createClient } from "@/lib/supabase/server"
+import { EngineerDetail } from "../_components/engineer-detail"
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }
 
 export default async function EngineerDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const supabase = await createClient();
+  const { id } = await params
+  const supabase = await createClient()
 
-  const { data: engineer } = await supabase.from("engineers").select("*").eq("id", id).single();
+  const { data: engineer } = await supabase.from("engineers").select("*").eq("id", id).single()
 
-  if (!engineer) notFound();
+  if (!engineer) notFound()
 
   const { data: documents } = await supabase
     .from("documents")
     .select("*")
     .eq("engineer_id", id)
     .order("created_at", { ascending: false })
-    .limit(1);
+    .limit(1)
 
-  const document = documents?.[0] ?? null;
-  const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const document = documents?.[0] ?? null
+  const storageUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
   async function handleDelete() {
-    "use server";
-    await deleteEngineer(id);
+    "use server"
+    await deleteEngineer(id)
   }
 
   return (
@@ -58,5 +58,5 @@ export default async function EngineerDetailPage({ params }: PageProps) {
 
       <EngineerDetail engineer={engineer} document={document} storageUrl={storageUrl} />
     </div>
-  );
+  )
 }

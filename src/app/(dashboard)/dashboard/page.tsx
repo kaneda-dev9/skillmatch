@@ -6,5 +6,5 @@ export default function DashboardPage() {
         SkillMatch へようこそ。Phase 2 以降で統計情報を表示します。
       </p>
     </div>
-  );
+  )
 }

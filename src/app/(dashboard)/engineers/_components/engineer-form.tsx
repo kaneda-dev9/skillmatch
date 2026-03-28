@@ -1,39 +1,39 @@
-"use client";
+"use client"
 
-import { Loader2, Plus, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { createEngineer, updateEngineer } from "@/actions/engineers";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Loader2, Plus, Trash2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { createEngineer, updateEngineer } from "@/actions/engineers"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import type { Availability, Engineer, Skill, SoftSkill } from "@/types";
-import { FileUpload } from "./file-upload";
+} from "@/components/ui/select"
+import type { Availability, Engineer, Skill, SoftSkill } from "@/types"
+import { FileUpload } from "./file-upload"
 
 interface EngineerFormProps {
-  engineer?: Engineer;
-  mode: "create" | "edit";
+  engineer?: Engineer
+  mode: "create" | "edit"
 }
 
 export function EngineerForm({ engineer, mode }: EngineerFormProps) {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
+  const router = useRouter()
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
-  const [name, setName] = useState(engineer?.name ?? "");
-  const [email, setEmail] = useState(engineer?.email ?? "");
-  const [skills, setSkills] = useState<Skill[]>(engineer?.skills ?? []);
-  const [experienceYears, setExperienceYears] = useState(engineer?.experience_years ?? 0);
-  const [industries, setIndustries] = useState<string[]>(engineer?.industries ?? []);
+  const [name, setName] = useState(engineer?.name ?? "")
+  const [email, setEmail] = useState(engineer?.email ?? "")
+  const [skills, setSkills] = useState<Skill[]>(engineer?.skills ?? [])
+  const [experienceYears, setExperienceYears] = useState(engineer?.experience_years ?? 0)
+  const [industries, setIndustries] = useState<string[]>(engineer?.industries ?? [])
   const [availability, setAvailability] = useState<Availability>(
     engineer?.availability ?? {
       rate_min: null,
@@ -42,86 +42,86 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
       remote: false,
       location: null,
     },
-  );
-  const [softSkills, setSoftSkills] = useState<SoftSkill[]>(engineer?.soft_skills ?? []);
-  const [rawText, setRawText] = useState(engineer?.raw_text ?? "");
+  )
+  const [softSkills, setSoftSkills] = useState<SoftSkill[]>(engineer?.soft_skills ?? [])
+  const [rawText, setRawText] = useState(engineer?.raw_text ?? "")
   const [fileInfo, setFileInfo] = useState<{
-    fileName: string;
-    filePath: string;
-    fileType: string;
-  } | null>(null);
+    fileName: string
+    filePath: string
+    fileType: string
+  } | null>(null)
 
-  const [newIndustry, setNewIndustry] = useState("");
+  const [newIndustry, setNewIndustry] = useState("")
 
   function handleParsed(result: {
-    data: Record<string, unknown>;
-    rawText: string;
-    fileName: string;
-    filePath: string;
-    fileType: string;
+    data: Record<string, unknown>
+    rawText: string
+    fileName: string
+    filePath: string
+    fileType: string
   }) {
     const d = result.data as {
-      name?: string;
-      email?: string | null;
-      skills?: Skill[];
-      experience_years?: number;
-      industries?: string[];
-      availability?: Availability;
-      soft_skills?: SoftSkill[];
-    };
-    if (d.name) setName(d.name);
-    if (d.email) setEmail(d.email);
-    if (d.skills) setSkills(d.skills);
-    if (d.experience_years) setExperienceYears(d.experience_years);
-    if (d.industries) setIndustries(d.industries);
-    if (d.availability) setAvailability(d.availability);
-    if (d.soft_skills) setSoftSkills(d.soft_skills);
-    setRawText(result.rawText);
+      name?: string
+      email?: string | null
+      skills?: Skill[]
+      experience_years?: number
+      industries?: string[]
+      availability?: Availability
+      soft_skills?: SoftSkill[]
+    }
+    if (d.name) setName(d.name)
+    if (d.email) setEmail(d.email)
+    if (d.skills) setSkills(d.skills)
+    if (d.experience_years) setExperienceYears(d.experience_years)
+    if (d.industries) setIndustries(d.industries)
+    if (d.availability) setAvailability(d.availability)
+    if (d.soft_skills) setSoftSkills(d.soft_skills)
+    setRawText(result.rawText)
     setFileInfo({
       fileName: result.fileName,
       filePath: result.filePath,
       fileType: result.fileType,
-    });
+    })
   }
 
   function addSkill() {
-    setSkills([...skills, { name: "", level: "intermediate", years: 0 }]);
+    setSkills([...skills, { name: "", level: "intermediate", years: 0 }])
   }
 
   function removeSkill(index: number) {
-    setSkills(skills.filter((_, i) => i !== index));
+    setSkills(skills.filter((_, i) => i !== index))
   }
 
   function updateSkill(index: number, field: keyof Skill, value: string | number) {
-    const updated = [...skills];
-    updated[index] = { ...updated[index], [field]: value };
-    setSkills(updated);
+    const updated = [...skills]
+    updated[index] = { ...updated[index], [field]: value }
+    setSkills(updated)
   }
 
   function addIndustry() {
     if (newIndustry && !industries.includes(newIndustry)) {
-      setIndustries([...industries, newIndustry]);
-      setNewIndustry("");
+      setIndustries([...industries, newIndustry])
+      setNewIndustry("")
     }
   }
 
   function removeIndustry(industry: string) {
-    setIndustries(industries.filter((i) => i !== industry));
+    setIndustries(industries.filter((i) => i !== industry))
   }
 
   function addSoftSkill() {
-    setSoftSkills([...softSkills, { name: "", description: null }]);
+    setSoftSkills([...softSkills, { name: "", description: null }])
   }
 
   function removeSoftSkill(index: number) {
-    setSoftSkills(softSkills.filter((_, i) => i !== index));
+    setSoftSkills(softSkills.filter((_, i) => i !== index))
   }
 
   async function handleSubmit() {
-    setPending(true);
-    setError(null);
+    setPending(true)
+    setError(null)
 
-    const formData = new FormData();
+    const formData = new FormData()
     formData.append(
       "data",
       JSON.stringify({
@@ -133,22 +133,22 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
         availability,
         soft_skills: softSkills,
       }),
-    );
-    formData.append("rawText", rawText);
+    )
+    formData.append("rawText", rawText)
     if (fileInfo) {
-      formData.append("fileName", fileInfo.fileName);
-      formData.append("filePath", fileInfo.filePath);
-      formData.append("fileType", fileInfo.fileType);
+      formData.append("fileName", fileInfo.fileName)
+      formData.append("filePath", fileInfo.filePath)
+      formData.append("fileType", fileInfo.fileType)
     }
 
     const result =
       mode === "create"
         ? await createEngineer(formData)
-        : await updateEngineer(engineer!.id, formData);
+        : await updateEngineer(engineer!.id, formData)
 
     if (result?.error) {
-      setError(result.error);
-      setPending(false);
+      setError(result.error)
+      setPending(false)
     }
   }
 
@@ -269,8 +269,8 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
               onChange={(e) => setNewIndustry(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  e.preventDefault();
-                  addIndustry();
+                  e.preventDefault()
+                  addIndustry()
                 }
               }}
             />
@@ -371,9 +371,9 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
                 placeholder="スキル名（例: リーダーシップ）"
                 value={ss.name}
                 onChange={(e) => {
-                  const updated = [...softSkills];
-                  updated[i] = { ...updated[i], name: e.target.value };
-                  setSoftSkills(updated);
+                  const updated = [...softSkills]
+                  updated[i] = { ...updated[i], name: e.target.value }
+                  setSoftSkills(updated)
                 }}
                 className="flex-1"
               />
@@ -397,5 +397,5 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
         </Button>
       </div>
     </div>
-  );
+  )
 }

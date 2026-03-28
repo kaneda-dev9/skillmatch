@@ -1,15 +1,15 @@
-"use client";
+"use client"
 
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Document, Engineer } from "@/types";
-import { FilePreview } from "./file-preview";
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { Document, Engineer } from "@/types"
+import { FilePreview } from "./file-preview"
 
 interface EngineerDetailProps {
-  engineer: Engineer;
-  document: Document | null;
-  storageUrl: string;
+  engineer: Engineer
+  document: Document | null
+  storageUrl: string
 }
 
 const LEVEL_LABELS: Record<string, string> = {
@@ -17,7 +17,7 @@ const LEVEL_LABELS: Record<string, string> = {
   intermediate: "中級",
   advanced: "上級",
   expert: "エキスパート",
-};
+}
 
 export function EngineerDetail({ engineer, document, storageUrl }: EngineerDetailProps) {
   return (
@@ -131,5 +131,5 @@ export function EngineerDetail({ engineer, document, storageUrl }: EngineerDetai
         </Card>
       </TabsContent>
     </Tabs>
-  );
+  )
 }

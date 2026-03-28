@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { Briefcase, FileText, LayoutDashboard, Settings, Target, Users } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { Briefcase, FileText, LayoutDashboard, Settings, Target, Users } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
 
 const navItems = [
   { href: "/dashboard", label: "ダッシュボード", icon: LayoutDashboard },
@@ -11,12 +11,12 @@ const navItems = [
   { href: "/projects", label: "案件", icon: Briefcase },
   { href: "/matching", label: "マッチング", icon: Target },
   { href: "/proposals", label: "提案書", icon: FileText },
-];
+]
 
-const bottomItems = [{ href: "/settings", label: "設定", icon: Settings }];
+const bottomItems = [{ href: "/settings", label: "設定", icon: Settings }]
 
 export function Sidebar() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <aside className="flex h-full w-64 flex-col border-r bg-muted/30">
@@ -27,7 +27,7 @@ export function Sidebar() {
       </div>
       <nav className="flex-1 space-y-1 px-3 py-4">
         {navItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname.startsWith(item.href)
           return (
             <Link
               key={item.href}
@@ -42,12 +42,12 @@ export function Sidebar() {
               <item.icon className="h-4 w-4" />
               {item.label}
             </Link>
-          );
+          )
         })}
       </nav>
       <div className="space-y-1 border-t px-3 py-4">
         {bottomItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname.startsWith(item.href)
           return (
             <Link
               key={item.href}
@@ -62,9 +62,9 @@ export function Sidebar() {
               <item.icon className="h-4 w-4" />
               {item.label}
             </Link>
-          );
+          )
         })}
       </div>
     </aside>
-  );
+  )
 }

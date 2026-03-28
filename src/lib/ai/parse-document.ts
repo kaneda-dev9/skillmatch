@@ -1,24 +1,24 @@
-import { generateText, Output } from "ai";
-import mammoth from "mammoth";
-import * as XLSX from "xlsx";
-import type { EngineerParseData } from "@/lib/validations/engineer";
-import { engineerParseSchema } from "@/lib/validations/engineer";
-import { llm } from "./provider";
+import { generateText, Output } from "ai"
+import mammoth from "mammoth"
+import * as XLSX from "xlsx"
+import type { EngineerParseData } from "@/lib/validations/engineer"
+import { engineerParseSchema } from "@/lib/validations/engineer"
+import { llm } from "./provider"
 
 export async function extractTextFromDocx(buffer: Buffer): Promise<string> {
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
+  const result = await mammoth.extractRawText({ buffer })
+  return result.value
 }
 
 export function extractTextFromXlsx(buffer: Buffer): string {
-  const workbook = XLSX.read(buffer);
-  const texts: string[] = [];
+  const workbook = XLSX.read(buffer)
+  const texts: string[] = []
   for (const sheetName of workbook.SheetNames) {
-    const sheet = workbook.Sheets[sheetName];
-    const csv = XLSX.utils.sheet_to_csv(sheet);
-    texts.push(`[${sheetName}]\n${csv}`);
+    const sheet = workbook.Sheets[sheetName]
+    const csv = XLSX.utils.sheet_to_csv(sheet)
+    texts.push(`[${sheetName}]\n${csv}`)
   }
-  return texts.join("\n\n");
+  return texts.join("\n\n")
 }
 
 const PARSE_PROMPT = `以下のスキルシート/職務経歴書から、エンジニアの情報を構造化してください。
@@ -32,18 +32,18 @@ const PARSE_PROMPT = `以下のスキルシート/職務経歴書から、エン
 - availability: 単価、稼働開始日、リモート可否、勤務地（記載がなければ null/false）
 - soft_skills: マネジメント、リーダー経験、コミュニケーション等
 
-記載がない項目は null、空配列、false などデフォルト値にしてください。`;
+記載がない項目は null、空配列、false などデフォルト値にしてください。`
 
 export async function parseDocumentWithAI(
   fileBuffer: Buffer,
   mimeType: string,
   _fileName: string,
 ): Promise<{ data: EngineerParseData; rawText: string }> {
-  let rawText: string;
-  let messages: Parameters<typeof generateText>[0]["messages"];
+  let rawText: string
+  let messages: Parameters<typeof generateText>[0]["messages"]
 
   if (mimeType === "application/pdf") {
-    rawText = "[PDFファイル - テキストはAIが直接抽出]";
+    rawText = "[PDFファイル - テキストはAIが直接抽出]"
     messages = [
       {
         role: "user",
@@ -52,34 +52,34 @@ export async function parseDocumentWithAI(
           { type: "text", text: PARSE_PROMPT },
         ],
       },
-    ];
+    ]
   } else if (
     mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   ) {
-    rawText = await extractTextFromDocx(fileBuffer);
+    rawText = await extractTextFromDocx(fileBuffer)
     messages = [
       {
         role: "user",
         content: `${PARSE_PROMPT}\n\n---\n\n${rawText}`,
       },
-    ];
+    ]
   } else if (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
-    rawText = extractTextFromXlsx(fileBuffer);
+    rawText = extractTextFromXlsx(fileBuffer)
     messages = [
       {
         role: "user",
         content: `${PARSE_PROMPT}\n\n---\n\n${rawText}`,
       },
-    ];
+    ]
   } else {
-    throw new Error(`未対応のファイル形式: ${mimeType}`);
+    throw new Error(`未対応のファイル形式: ${mimeType}`)
   }
 
   const result = await generateText({
     model: llm,
     output: Output.object({ schema: engineerParseSchema }),
     messages,
-  });
+  })
 
-  return { data: result.output, rawText };
+  return { data: result.output, rawText }
 }
