@@ -170,7 +170,7 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
           <CardTitle>基本情報</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="name">名前 *</Label>
               <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
@@ -287,7 +287,7 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
           <CardTitle>稼働条件</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>最低単価（円/月）</Label>
               <Input
@@ -315,7 +315,7 @@ export function EngineerForm({ engineer, mode }: EngineerFormProps) {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label>稼働開始日</Label>
               <Input

@@ -26,7 +26,7 @@ export function SearchFilter() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <div className="relative max-w-md flex-1">
         <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -37,20 +37,20 @@ export function SearchFilter() {
           className="pl-9"
         />
       </div>
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex cursor-pointer items-center gap-2 text-sm">
         <input
           type="checkbox"
           checked={remoteOnly}
           onChange={(e) => setRemoteOnly(e.target.checked)}
-          className="rounded"
+          className="cursor-pointer rounded"
         />
         リモート可のみ
       </label>
-      <Button onClick={handleSearch} size="sm">
+      <Button onClick={handleSearch} size="sm" aria-label="検索を実行">
         検索
       </Button>
       {(query || remoteOnly) && (
-        <Button onClick={handleClear} variant="ghost" size="sm">
+        <Button onClick={handleClear} variant="ghost" size="sm" aria-label="検索条件をクリア">
           <X className="h-4 w-4" />
         </Button>
       )}
