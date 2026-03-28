@@ -73,6 +73,17 @@ src/
 **バグ修正**: `superpowers:systematic-debugging` を先に使う。
 **コードレビュー依頼時**: `superpowers:requesting-code-review` を使う。
 
+### 技術スキル（コード作成・レビュー時に必ず参照）
+
+| スキル | 使用タイミング |
+|--------|---------------|
+| `vercel-react-best-practices` | React/Next.js コードの作成・レビュー・リファクタリング時 |
+| `vercel-composition-patterns` | コンポーネント設計・Props 設計・リファクタリング時 |
+| `ai-sdk` | AI SDK（generateText, streamText, embed 等）を使用する時 |
+| `supabase-postgres-best-practices` | SQL、スキーマ設計、クエリ最適化時 |
+| `ui-ux-pro-max` | UI/UX の設計・構築・レビュー時 |
+| `frontend-design:frontend-design` | フロントエンド画面の構築時 |
+
 ---
 
 ## 7つの原則
