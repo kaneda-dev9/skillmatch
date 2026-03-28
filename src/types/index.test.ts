@@ -19,6 +19,7 @@ describe("型定義", () => {
       name: "テスト組織",
       plan: null,
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(org.id).toBe("test-id")
     expect(org.plan).toBeNull()
@@ -32,6 +33,7 @@ describe("型定義", () => {
       name: "テストユーザー",
       role: "admin",
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(user.role).toBe("admin")
   })
@@ -60,6 +62,7 @@ describe("型定義", () => {
       raw_text: "経歴テキスト",
       embedding: null,
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(engineer.skills).toHaveLength(1)
     expect(engineer.industries).toContain("金融")
@@ -85,6 +88,7 @@ describe("型定義", () => {
       embedding: null,
       status: "open",
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(project.status).toBe("open")
   })
@@ -103,6 +107,7 @@ describe("型定義", () => {
       soft_skill_score: 70,
       ai_reasoning: "マッチ理由",
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(match.overall_score).toBe(85.5)
   })
@@ -118,6 +123,7 @@ describe("型定義", () => {
       file_type: "application/pdf",
       parsed_content: null,
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(doc.engineer_id).toBeNull()
   })
@@ -130,6 +136,7 @@ describe("型定義", () => {
       content: "提案書内容",
       format: "markdown",
       created_at: "2026-01-01T00:00:00Z",
+      updated_at: "2026-01-01T00:00:00Z",
     }
     expect(proposal.format).toBe("markdown")
   })

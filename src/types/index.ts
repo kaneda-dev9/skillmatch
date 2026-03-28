@@ -6,6 +6,7 @@ export interface Organization {
   name: string
   plan: string | null
   created_at: string
+  updated_at: string
 }
 
 export interface User {
@@ -15,6 +16,7 @@ export interface User {
   name: string
   role: UserRole
   created_at: string
+  updated_at: string
 }
 
 export interface Engineer {
@@ -30,6 +32,7 @@ export interface Engineer {
   raw_text: string
   embedding: number[] | null
   created_at: string
+  updated_at: string
 }
 
 export interface Skill {
@@ -64,6 +67,7 @@ export interface Project {
   embedding: number[] | null
   status: ProjectStatus
   created_at: string
+  updated_at: string
 }
 
 export interface Match {
@@ -79,6 +83,7 @@ export interface Match {
   soft_skill_score: number
   ai_reasoning: string
   created_at: string
+  updated_at: string
 }
 
 export interface Document {
@@ -91,6 +96,7 @@ export interface Document {
   file_type: string
   parsed_content: string | null
   created_at: string
+  updated_at: string
 }
 
 export interface Proposal {
@@ -100,4 +106,5 @@ export interface Proposal {
   content: string
   format: string
   created_at: string
+  updated_at: string
 }
