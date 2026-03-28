@@ -29,7 +29,8 @@ export async function parseDocument(formData: FormData) {
     const buffer = Buffer.from(await file.arrayBuffer())
     const { data, rawText } = await parseDocumentWithAI(buffer, file.type, file.name)
     return { data, rawText, fileName: file.name, fileType: file.type }
-  } catch {
+  } catch (e) {
+    console.error("[parseDocument] 解析エラー:", e)
     return { error: "ファイルの解析に失敗しました。手動で入力してください。" }
   }
 }

@@ -16,14 +16,32 @@ export const engineerFormSchema = z.object({
   soft_skills: z.array(softSkillSchema).default([]),
 })
 
+// AI 出力用スキーマ（Anthropic API が minimum/minLength 非対応のため制約なし）
+const parseSkillSchema = z.object({
+  name: z.string(),
+  level: z.enum(["beginner", "intermediate", "advanced", "expert"]),
+  years: z.number(),
+})
+
+const parseSoftSkillSchema = z.object({
+  name: z.string(),
+  description: z.string().nullable(),
+})
+
 export const engineerParseSchema = z.object({
   name: z.string(),
   email: z.string().nullable(),
-  skills: z.array(skillSchema),
+  skills: z.array(parseSkillSchema),
   experience_years: z.number(),
   industries: z.array(z.string()),
-  availability: availabilitySchema,
-  soft_skills: z.array(softSkillSchema),
+  availability: z.object({
+    rate_min: z.number().nullable(),
+    rate_max: z.number().nullable(),
+    start_date: z.string().nullable(),
+    remote: z.boolean(),
+    location: z.string().nullable(),
+  }),
+  soft_skills: z.array(parseSoftSkillSchema),
 })
 
 export type EngineerFormData = z.infer<typeof engineerFormSchema>
