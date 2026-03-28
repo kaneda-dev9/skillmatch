@@ -231,7 +231,12 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
               placeholder="業界を追加（例: 金融）"
               value={newIndustry}
               onChange={(e) => setNewIndustry(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addIndustry())}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  addIndustry()
+                }
+              }}
             />
             <Button variant="outline" size="sm" onClick={addIndustry}>
               追加
