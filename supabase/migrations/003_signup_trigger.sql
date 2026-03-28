@@ -1,7 +1,5 @@
--- 既存の未設定ユーザーを削除（開発環境クリーンアップ）
-DELETE FROM auth.users;
-
 -- サインアップ時に組織 + ユーザープロフィールを自動作成するトリガー関数
+-- 組織作成者は常に admin ロール。招待フローでは別のロジックを使うこと。
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger
 LANGUAGE plpgsql
@@ -28,6 +26,7 @@ BEGIN
 END;
 $$;
 
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
