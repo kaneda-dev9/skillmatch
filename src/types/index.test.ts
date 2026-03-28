@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest"
 import type {
   Availability,
   Document,
@@ -10,7 +10,7 @@ import type {
   Skill,
   SoftSkill,
   User,
-} from "./index";
+} from "./index"
 
 describe("型定義", () => {
   it("Organization 型がオブジェクトとして使用できる", () => {
@@ -19,10 +19,11 @@ describe("型定義", () => {
       name: "テスト組織",
       plan: null,
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(org.id).toBe("test-id");
-    expect(org.plan).toBeNull();
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(org.id).toBe("test-id")
+    expect(org.plan).toBeNull()
+  })
 
   it("User 型が role を正しく制約する", () => {
     const user: User = {
@@ -32,20 +33,21 @@ describe("型定義", () => {
       name: "テストユーザー",
       role: "admin",
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(user.role).toBe("admin");
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(user.role).toBe("admin")
+  })
 
   it("Engineer 型がスキル・稼働条件を含む", () => {
-    const skill: Skill = { name: "TypeScript", level: "advanced", years: 5 };
+    const skill: Skill = { name: "TypeScript", level: "advanced", years: 5 }
     const availability: Availability = {
       rate_min: 500000,
       rate_max: 800000,
       start_date: "2026-04-01",
       remote: true,
       location: null,
-    };
-    const softSkill: SoftSkill = { name: "リーダーシップ", description: null };
+    }
+    const softSkill: SoftSkill = { name: "リーダーシップ", description: null }
 
     const engineer: Engineer = {
       id: "eng-id",
@@ -60,10 +62,11 @@ describe("型定義", () => {
       raw_text: "経歴テキスト",
       embedding: null,
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(engineer.skills).toHaveLength(1);
-    expect(engineer.industries).toContain("金融");
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(engineer.skills).toHaveLength(1)
+    expect(engineer.industries).toContain("金融")
+  })
 
   it("Project 型が status を正しく制約する", () => {
     const project: Project = {
@@ -85,9 +88,10 @@ describe("型定義", () => {
       embedding: null,
       status: "open",
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(project.status).toBe("open");
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(project.status).toBe("open")
+  })
 
   it("Match 型がスコアフィールドを持つ", () => {
     const match: Match = {
@@ -103,9 +107,10 @@ describe("型定義", () => {
       soft_skill_score: 70,
       ai_reasoning: "マッチ理由",
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(match.overall_score).toBe(85.5);
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(match.overall_score).toBe(85.5)
+  })
 
   it("Document 型が engineer/project を nullable で持つ", () => {
     const doc: Document = {
@@ -118,9 +123,10 @@ describe("型定義", () => {
       file_type: "application/pdf",
       parsed_content: null,
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(doc.engineer_id).toBeNull();
-  });
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(doc.engineer_id).toBeNull()
+  })
 
   it("Proposal 型が match_id を参照する", () => {
     const proposal: Proposal = {
@@ -130,7 +136,8 @@ describe("型定義", () => {
       content: "提案書内容",
       format: "markdown",
       created_at: "2026-01-01T00:00:00Z",
-    };
-    expect(proposal.format).toBe("markdown");
-  });
-});
+      updated_at: "2026-01-01T00:00:00Z",
+    }
+    expect(proposal.format).toBe("markdown")
+  })
+})
