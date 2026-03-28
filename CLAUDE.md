@@ -38,6 +38,43 @@ src/
 
 ---
 
+## superpowers ワークフロー（必須）
+
+すべての作業は以下のワークフローに従うこと。**スキップ禁止**。
+
+```
+1. Brainstorming（設計前）
+   → superpowers:brainstorming
+   新機能・変更の前に必ず実行。要件の明確化、設計の検討。
+   些細な修正（typo、1行変更）のみ免除。
+
+2. Planning（設計後）
+   → superpowers:writing-plans
+   ブレスト承認後、実装計画を作成。タスクを2〜5分単位に分解。
+
+3. Implementation（計画承認後）
+   → superpowers:executing-plans または superpowers:subagent-driven-development
+   計画に沿ってタスクを実行。独立タスクはサブエージェントで並列化。
+
+4. TDD（実装中）
+   → superpowers:test-driven-development
+   各タスクで Red → Green → Refactor を実施。テストなしのコードは書かない。
+
+5. Verification（完了前）
+   → superpowers:verification-before-completion
+   ビルド・テスト・lint が通ることを確認してから完了を宣言。
+
+6. Finishing（全タスク完了後）
+   → superpowers:finishing-a-development-branch
+   テスト確認 → マージ/PR/破棄の選択肢を提示。
+```
+
+**判断基準**: 1%でも該当する可能性があればスキルを呼び出す。
+**バグ修正**: `superpowers:systematic-debugging` を先に使う。
+**コードレビュー依頼時**: `superpowers:requesting-code-review` を使う。
+
+---
+
 ## 7つの原則
 
 ### 1. 計画優先 (Plan Mode Default)
