@@ -32,10 +32,13 @@ src/
 - `pnpm run dev` — 開発サーバー起動
 - `pnpm run build` — ビルド
 - `pnpm run lint` — Lint 実行
+- `pnpm run check` — Lint + Format 一括適用（Biome）
+- `pnpm run test` — テスト実行（Vitest）
+- `pnpm run test:ui` — テスト UI 起動
 
 ---
 
-## 6つの原則
+## 7つの原則
 
 ### 1. 計画優先 (Plan Mode Default)
 
@@ -66,7 +69,22 @@ src/
 - **記録形式**: 日付、何が起きたか、どう直したか、次回の防止策
 - 新しいセッション開始時に `revision_log.md` を確認し、同じミスを繰り返さない
 
-### 4. 完了前検証 (Verification Before Done)
+### 4. テスト駆動開発 (Test-Driven Development)
+
+機能実装時は `superpowers:test-driven-development` スキルに従い、テストを先に書く。
+
+- **テストフレームワーク**: Vitest + React Testing Library
+- **テストファイル**: `src/**/*.test.ts(x)` に配置（コロケーション）
+- **実装前にテストを書く**: Red → Green → Refactor のサイクル
+- **カバレッジ対象**:
+  - Server Actions のロジック
+  - ユーティリティ関数
+  - Client Components のレンダリング・インタラクション
+- **非同期 Server Components**: E2E テスト（Playwright）で対応（将来追加）
+
+テストが通らない状態で「完了」とは言わない。
+
+### 5. 完了前検証 (Verification Before Done)
 
 タスク完了を宣言する前に、以下を自問する:
 
@@ -74,13 +92,14 @@ src/
 
 具体的なチェック項目:
 - `pnpm run build` が通るか
+- `pnpm run test` が通るか
 - 型エラーがないか
 - 既存の機能を壊していないか
 - 不要なコードや console.log が残っていないか
 
-ビルドが通らない状態で「完了」とは言わない。
+ビルドやテストが通らない状態で「完了」とは言わない。
 
-### 5. 洗練された設計 (Demand Elegance)
+### 6. 洗練された設計 (Demand Elegance)
 
 設計判断を含む変更（アーキテクチャ変更、新しいパターン導入など）では:
 
@@ -90,7 +109,7 @@ src/
 
 些細な修正やバグフィックスには適用しない。シンプルに直す。
 
-### 6. 自律的バグ修正 (Autonomous Bug Fixing)
+### 7. 自律的バグ修正 (Autonomous Bug Fixing)
 
 バグ報告を受けたら:
 
