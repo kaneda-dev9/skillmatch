@@ -25,7 +25,13 @@ export const engineerFormSchema = z.object({
   skills: z.array(skillSchema).default([]),
   experience_years: z.number().min(0).default(0),
   industries: z.array(z.string()).default([]),
-  availability: availabilitySchema.default({}),
+  availability: availabilitySchema.default({
+    rate_min: null,
+    rate_max: null,
+    start_date: null,
+    remote: false,
+    location: null,
+  }),
   soft_skills: z.array(softSkillSchema).default([]),
 });
 
