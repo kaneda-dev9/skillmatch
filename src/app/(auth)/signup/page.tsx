@@ -38,6 +38,10 @@ export default function SignupPage() {
       <CardContent>
         <form action={handleSubmit} className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="orgName">組織名</Label>
+            <Input id="orgName" name="orgName" type="text" required placeholder="株式会社〇〇" />
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="name">名前</Label>
             <Input id="name" name="name" type="text" required />
           </div>

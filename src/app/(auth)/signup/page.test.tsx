@@ -39,4 +39,10 @@ describe("SignupPage", () => {
     expect(links.length).toBeGreaterThanOrEqual(1)
     expect(links[0]).toHaveAttribute("href", "/login")
   })
+
+  it("組織名の入力フィールドが表示される", () => {
+    render(<SignupPage />)
+    expect(screen.getByLabelText("組織名")).toBeInTheDocument()
+    expect(screen.getByLabelText("組織名")).toBeRequired()
+  })
 })
