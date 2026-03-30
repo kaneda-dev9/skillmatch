@@ -18,6 +18,7 @@ interface MatchingCardProps {
     ai_reasoning: string
     engineer: Pick<Engineer, "id" | "name" | "skills" | "experience_years">
   }
+  proposalId?: string
 }
 
 function scoreColor(score: number): string {
@@ -33,7 +34,7 @@ function formatTopSkills(skills: Skill[]): string {
     .join(" / ")
 }
 
-export function MatchingCard({ match }: MatchingCardProps) {
+export function MatchingCard({ match, proposalId }: MatchingCardProps) {
   const [expanded, setExpanded] = useState(false)
   const { engineer } = match
 
@@ -88,13 +89,23 @@ export function MatchingCard({ match }: MatchingCardProps) {
         >
           {expanded ? "▼" : "▶"} AI評価
         </button>
-        <Link
-          href={`/proposals/new?matchId=${match.id}`}
-          className="flex items-center gap-1 text-sm text-primary hover:underline"
-        >
-          <FileText className="h-3 w-3" />
-          提案書を生成
-        </Link>
+        {proposalId ? (
+          <Link
+            href={`/proposals/${proposalId}`}
+            className="flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <FileText className="h-3 w-3" />
+            提案書を確認
+          </Link>
+        ) : (
+          <Link
+            href={`/proposals/new?matchId=${match.id}`}
+            className="flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            <FileText className="h-3 w-3" />
+            提案書を生成
+          </Link>
+        )}
         {expanded && <p className="mt-2 text-sm text-muted-foreground">{match.ai_reasoning}</p>}
       </div>
     </div>
