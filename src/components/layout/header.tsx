@@ -41,7 +41,7 @@ export async function Header() {
             </Button>
           }
         />
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="min-w-56">
           <DropdownMenuItem className="text-xs text-muted-foreground" disabled>
             {user?.email}
           </DropdownMenuItem>
