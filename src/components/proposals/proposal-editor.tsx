@@ -66,7 +66,7 @@ export function ProposalEditor({
   )
 
   const editorPanel = (
-    <div className="rounded-lg border p-4">
+    <div className="flex flex-col rounded-lg border p-4">
       {layout === "split" && (
         <h3 className="mb-3 text-sm font-semibold text-muted-foreground">エディタ</h3>
       )}
@@ -74,7 +74,7 @@ export function ProposalEditor({
         value={content}
         onChange={(e) => setContent(e.target.value)}
         disabled={readOnly}
-        className="h-96 w-full resize-y rounded-md border bg-background p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+        className="min-h-96 w-full flex-1 resize-y rounded-md border bg-background p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       />
 
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
