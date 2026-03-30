@@ -2,6 +2,7 @@ import { ArrowLeft, Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { deleteProject, toggleProjectStatus } from "@/actions/projects"
+import { ExecuteMatchingButton } from "@/components/matching/execute-button"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
@@ -42,6 +43,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           </Badge>
         </div>
         <div className="flex gap-2">
+          <ExecuteMatchingButton projectId={id} variant="outline" size="sm" />
           <form action={handleToggleStatus}>
             <Button variant="outline" type="submit">
               {project.status === "open" ? "終了にする" : "募集中にする"}
@@ -58,6 +60,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             </Button>
           </form>
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Link href={`/matching/${id}`} className="text-sm text-primary hover:underline">
+          マッチング結果を見る
+        </Link>
       </div>
 
       <ProjectDetail project={project} />
