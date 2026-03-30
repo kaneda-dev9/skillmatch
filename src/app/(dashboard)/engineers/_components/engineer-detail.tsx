@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SkillBadge } from "@/components/ui/skill-badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import type { Document, Engineer } from "@/types"
 import { FilePreview } from "./file-preview"
@@ -10,13 +11,6 @@ interface EngineerDetailProps {
   engineer: Engineer
   document: Document | null
   storageUrl: string
-}
-
-const LEVEL_LABELS: Record<string, string> = {
-  beginner: "初級",
-  intermediate: "中級",
-  advanced: "上級",
-  expert: "エキスパート",
 }
 
 export function EngineerDetail({ engineer, document, storageUrl }: EngineerDetailProps) {
@@ -37,9 +31,7 @@ export function EngineerDetail({ engineer, document, storageUrl }: EngineerDetai
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {engineer.skills.map((skill) => (
-                <Badge key={skill.name} variant="secondary">
-                  {skill.name}（{LEVEL_LABELS[skill.level]}・{skill.years}年）
-                </Badge>
+                <SkillBadge key={skill.name} name={skill.name} />
               ))}
               {engineer.skills.length === 0 && (
                 <p className="text-sm text-muted-foreground">未登録</p>

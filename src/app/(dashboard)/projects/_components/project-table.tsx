@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
+import { SkillBadge } from "@/components/ui/skill-badge"
 import {
   Table,
   TableBody,
@@ -56,12 +57,12 @@ export function ProjectTable({ projects }: ProjectTableProps) {
               <TableCell>
                 <div className="flex flex-wrap gap-1">
                   {project.required_skills.slice(0, 3).map((skill) => (
-                    <Badge key={skill.name} variant="secondary">
-                      {skill.name}
-                    </Badge>
+                    <SkillBadge key={skill.name} name={skill.name} />
                   ))}
                   {project.required_skills.length > 3 && (
-                    <Badge variant="outline">+{project.required_skills.length - 3}</Badge>
+                    <span className="text-xs text-muted-foreground">
+                      +{project.required_skills.length - 3}
+                    </span>
                   )}
                 </div>
               </TableCell>
