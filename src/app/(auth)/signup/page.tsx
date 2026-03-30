@@ -67,7 +67,7 @@ export default function SignupPage() {
             <span className="bg-card px-2 text-muted-foreground">または</span>
           </div>
         </div>
-        <GoogleLoginButton />
+        <GoogleLoginButton label="Google でアカウント作成" />
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">

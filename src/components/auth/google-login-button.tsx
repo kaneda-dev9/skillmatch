@@ -4,7 +4,11 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 
-export function GoogleLoginButton() {
+interface GoogleLoginButtonProps {
+  label?: string
+}
+
+export function GoogleLoginButton({ label = "Google でログイン" }: GoogleLoginButtonProps) {
   const [pending, setPending] = useState(false)
 
   async function handleGoogleLogin() {
@@ -44,7 +48,7 @@ export function GoogleLoginButton() {
           fill="#EA4335"
         />
       </svg>
-      {pending ? "リダイレクト中..." : "Google でログイン"}
+      {pending ? "リダイレクト中..." : label}
     </Button>
   )
 }
