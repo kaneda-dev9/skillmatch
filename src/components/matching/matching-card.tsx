@@ -81,31 +81,33 @@ export function MatchingCard({ match, proposalId }: MatchingCardProps) {
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-3 border-t pt-3">
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          {expanded ? "▼" : "▶"} AI評価
-        </button>
-        {proposalId ? (
-          <Link
-            href={`/proposals/${proposalId}`}
-            className="flex items-center gap-1 text-sm text-primary hover:underline"
+      <div className="mt-3 border-t pt-3">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-sm text-muted-foreground hover:text-foreground"
           >
-            <FileText className="h-3 w-3" />
-            提案書を確認
-          </Link>
-        ) : (
-          <Link
-            href={`/proposals/new?matchId=${match.id}`}
-            className="flex items-center gap-1 text-sm text-primary hover:underline"
-          >
-            <FileText className="h-3 w-3" />
-            提案書を生成
-          </Link>
-        )}
+            {expanded ? "▼" : "▶"} AI評価
+          </button>
+          {proposalId ? (
+            <Link
+              href={`/proposals/${proposalId}`}
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              <FileText className="h-3 w-3" />
+              提案書を確認
+            </Link>
+          ) : (
+            <Link
+              href={`/proposals/new?matchId=${match.id}`}
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              <FileText className="h-3 w-3" />
+              提案書を生成
+            </Link>
+          )}
+        </div>
         {expanded && <p className="mt-2 text-sm text-muted-foreground">{match.ai_reasoning}</p>}
       </div>
     </div>
