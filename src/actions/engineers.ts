@@ -106,6 +106,9 @@ export async function updateEngineer(id: string, formData: FormData) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) return { error: "ユーザープロフィールが見つかりません" }
+
   const raw = JSON.parse(formData.get("data") as string)
   const parsed = engineerFormSchema.safeParse(raw)
   if (!parsed.success) {
@@ -136,6 +139,7 @@ export async function updateEngineer(id: string, formData: FormData) {
       embedding,
     })
     .eq("id", id)
+    .eq("org_id", profile.org_id)
 
   if (error) return { error: error.message }
 
@@ -146,22 +150,14 @@ export async function updateEngineer(id: string, formData: FormData) {
   if (fileName && filePath && fileType) {
     await supabase.from("documents").delete().eq("engineer_id", id)
 
-    const { data: profile } = await supabase
-      .from("users")
-      .select("org_id")
-      .eq("id", user.id)
-      .single()
-
-    if (profile) {
-      await supabase.from("documents").insert({
-        org_id: profile.org_id,
-        engineer_id: id,
-        file_name: fileName,
-        file_path: filePath,
-        file_type: fileType,
-        parsed_content: rawText,
-      })
-    }
+    await supabase.from("documents").insert({
+      org_id: profile.org_id,
+      engineer_id: id,
+      file_name: fileName,
+      file_path: filePath,
+      file_type: fileType,
+      parsed_content: rawText,
+    })
   }
 
   revalidatePath("/engineers")
@@ -176,14 +172,25 @@ export async function deleteEngineer(id: string) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
-  const { data: docs } = await supabase.from("documents").select("file_path").eq("engineer_id", id)
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) return { error: "ユーザープロフィールが見つかりません" }
+
+  const { data: docs } = await supabase
+    .from("documents")
+    .select("file_path")
+    .eq("engineer_id", id)
+    .eq("org_id", profile.org_id)
 
   if (docs && docs.length > 0) {
     const paths = docs.map((d) => d.file_path)
     await supabase.storage.from("documents").remove(paths)
   }
 
-  const { error } = await supabase.from("engineers").delete().eq("id", id)
+  const { error } = await supabase
+    .from("engineers")
+    .delete()
+    .eq("id", id)
+    .eq("org_id", profile.org_id)
   if (error) return { error: error.message }
 
   revalidatePath("/engineers")

@@ -57,6 +57,9 @@ export async function updateProject(id: string, formData: FormData) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) return { error: "ユーザープロフィールが見つかりません" }
+
   const raw = JSON.parse(formData.get("data") as string)
   const parsed = projectFormSchema.safeParse(raw)
   if (!parsed.success) {
@@ -86,6 +89,7 @@ export async function updateProject(id: string, formData: FormData) {
       embedding,
     })
     .eq("id", id)
+    .eq("org_id", profile.org_id)
 
   if (error) return { error: error.message }
 
@@ -101,7 +105,14 @@ export async function deleteProject(id: string) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
-  const { error } = await supabase.from("projects").delete().eq("id", id)
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) return { error: "ユーザープロフィールが見つかりません" }
+
+  const { error } = await supabase
+    .from("projects")
+    .delete()
+    .eq("id", id)
+    .eq("org_id", profile.org_id)
   if (error) return { error: error.message }
 
   revalidatePath("/projects")
@@ -115,13 +126,25 @@ export async function toggleProjectStatus(id: string) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
-  const { data: project } = await supabase.from("projects").select("status").eq("id", id).single()
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) return { error: "ユーザープロフィールが見つかりません" }
+
+  const { data: project } = await supabase
+    .from("projects")
+    .select("status")
+    .eq("id", id)
+    .eq("org_id", profile.org_id)
+    .single()
 
   if (!project) return { error: "案件が見つかりません" }
 
   const newStatus = project.status === "open" ? "closed" : "open"
 
-  const { error } = await supabase.from("projects").update({ status: newStatus }).eq("id", id)
+  const { error } = await supabase
+    .from("projects")
+    .update({ status: newStatus })
+    .eq("id", id)
+    .eq("org_id", profile.org_id)
 
   if (error) return { error: error.message }
 

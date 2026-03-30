@@ -20,11 +20,17 @@ export async function POST(request: Request) {
     return Response.json({ error: "認証が必要です" }, { status: 401 })
   }
 
-  // match + engineer + project を取得
+  const { data: profile } = await supabase.from("users").select("org_id").eq("id", user.id).single()
+  if (!profile) {
+    return Response.json({ error: "ユーザープロフィールが見つかりません" }, { status: 403 })
+  }
+
+  // match + engineer + project を取得（org_id で認可チェック）
   const { data: match } = await supabase
     .from("matches")
     .select("*, engineer:engineers(*), project:projects(*)")
     .eq("id", matchId)
+    .eq("org_id", profile.org_id)
     .single()
 
   if (!match) {
