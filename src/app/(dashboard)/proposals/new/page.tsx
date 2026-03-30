@@ -1,10 +1,10 @@
 "use client"
 
 import { useCompletion } from "@ai-sdk/react"
-import { ArrowLeft, Loader2 } from "lucide-react"
+import { ArrowLeft, Loader2, Zap } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Suspense, useEffect, useRef } from "react"
+import { Suspense, useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
@@ -23,19 +23,18 @@ export default function NewProposalPage() {
 function NewProposalContent() {
   const searchParams = useSearchParams()
   const matchId = searchParams.get("matchId")
-  const hasStarted = useRef(false)
+  const [started, setStarted] = useState(false)
 
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/proposals/generate",
     streamProtocol: "text",
   })
 
-  useEffect(() => {
-    if (matchId && !hasStarted.current) {
-      hasStarted.current = true
-      complete("", { body: { matchId } })
-    }
-  }, [matchId, complete])
+  function handleGenerate() {
+    if (!matchId) return
+    setStarted(true)
+    complete("", { body: { matchId } })
+  }
 
   if (!matchId) {
     return (
@@ -69,6 +68,18 @@ function NewProposalContent() {
         <p className="text-sm text-destructive">提案書の生成に失敗しました。再試行してください。</p>
       )}
 
+      {/* 未開始: 生成ボタン */}
+      {!started && !completion && (
+        <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
+          <p className="mb-4">提案書を AI で自動生成します</p>
+          <Button onClick={handleGenerate}>
+            <Zap className="mr-2 h-4 w-4" />
+            生成開始
+          </Button>
+        </div>
+      )}
+
+      {/* 生成中: ストリーミングプレビュー */}
       {isLoading && completion && (
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-lg border p-4">
@@ -88,24 +99,8 @@ function NewProposalContent() {
         </div>
       )}
 
+      {/* 生成完了: エディタ */}
       {!isLoading && completion && <ProposalEditor content={completion} matchId={matchId} />}
-
-      {!isLoading && !completion && !error && (
-        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-          <p>提案書の生成が完了していません</p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-3"
-            onClick={() => {
-              hasStarted.current = true
-              complete("", { body: { matchId } })
-            }}
-          >
-            再生成
-          </Button>
-        </div>
-      )}
     </div>
   )
 }
