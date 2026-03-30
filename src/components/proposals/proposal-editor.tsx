@@ -28,14 +28,7 @@ export function ProposalEditor({
   const [layout, setLayout] = useState<"split" | "tabs">("split")
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview")
   function handleDownloadPdf() {
-    const html = content
-      .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-      .replace(/^- (.+)$/gm, "<li>$1</li>")
-      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-      .replace(/\n\n/g, "<br><br>")
-      .replace(/\n/g, "<br>")
+    const html = markdownToHtml(content)
 
     const printWindow = window.open("", "_blank")
     if (!printWindow) return
@@ -226,4 +219,39 @@ export function ProposalEditor({
       )}
     </div>
   )
+}
+
+function markdownToHtml(md: string): string {
+  // テーブルを先に変換（改行ベースの置換の前に処理）
+  const tableRegex = /(?:^\|.+\|$\n?)+/gm
+  const withTables = md.replace(tableRegex, (block) => {
+    const rows = block.trim().split("\n")
+    if (rows.length < 2) return block
+
+    // セパレータ行（|---|---|）を検出してスキップ
+    const isHeader = rows.length >= 2 && /^\|[\s-:|]+\|$/.test(rows[1])
+    const dataRows = isHeader ? [rows[0], ...rows.slice(2)] : rows
+
+    let html = "<table>"
+    for (let i = 0; i < dataRows.length; i++) {
+      const cells = dataRows[i]
+        .split("|")
+        .slice(1, -1)
+        .map((c) => c.trim())
+      const tag = isHeader && i === 0 ? "th" : "td"
+      html += `<tr>${cells.map((c) => `<${tag}>${c}</${tag}>`).join("")}</tr>`
+    }
+    html += "</table>"
+    return html
+  })
+
+  // 残りの Markdown 要素を変換
+  return withTables
+    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n\n/g, "<br><br>")
+    .replace(/\n/g, "<br>")
 }
