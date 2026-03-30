@@ -109,17 +109,17 @@ export function ProposalEditor({
           variant={layout === "split" ? "default" : "outline"}
           size="sm"
           onClick={() => setLayout("split")}
-          aria-label="2カラム表示"
         >
-          <Columns2 className="h-4 w-4" />
+          <Columns2 className="mr-1.5 h-4 w-4" />
+          2カラム
         </Button>
         <Button
           variant={layout === "tabs" ? "default" : "outline"}
           size="sm"
           onClick={() => setLayout("tabs")}
-          aria-label="タブ表示"
         >
-          <SquareStack className="h-4 w-4" />
+          <SquareStack className="mr-1.5 h-4 w-4" />
+          タブ
         </Button>
       </div>
 
