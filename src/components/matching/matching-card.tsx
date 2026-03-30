@@ -1,5 +1,6 @@
 "use client"
 
+import { FileText } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
@@ -17,6 +18,7 @@ interface MatchingCardProps {
     ai_reasoning: string
     engineer: Pick<Engineer, "id" | "name" | "skills" | "experience_years">
   }
+  proposalId?: string
 }
 
 function scoreColor(score: number): string {
@@ -32,7 +34,7 @@ function formatTopSkills(skills: Skill[]): string {
     .join(" / ")
 }
 
-export function MatchingCard({ match }: MatchingCardProps) {
+export function MatchingCard({ match, proposalId }: MatchingCardProps) {
   const [expanded, setExpanded] = useState(false)
   const { engineer } = match
 
@@ -80,13 +82,32 @@ export function MatchingCard({ match }: MatchingCardProps) {
       </div>
 
       <div className="mt-3 border-t pt-3">
-        <button
-          type="button"
-          onClick={() => setExpanded(!expanded)}
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          {expanded ? "▼" : "▶"} AI評価
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setExpanded(!expanded)}
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            {expanded ? "▼" : "▶"} AI評価
+          </button>
+          {proposalId ? (
+            <Link
+              href={`/proposals/${proposalId}`}
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              <FileText className="h-3 w-3" />
+              提案書を確認
+            </Link>
+          ) : (
+            <Link
+              href={`/proposals/new?matchId=${match.id}`}
+              className="flex items-center gap-1 text-sm text-primary hover:underline"
+            >
+              <FileText className="h-3 w-3" />
+              提案書を生成
+            </Link>
+          )}
+        </div>
         {expanded && <p className="mt-2 text-sm text-muted-foreground">{match.ai_reasoning}</p>}
       </div>
     </div>
