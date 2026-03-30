@@ -32,37 +32,52 @@ export function ProposalEditor({
   async function handleDownloadPdf() {
     setGeneratingPdf(true)
     try {
-      const { default: html2pdf } = await import("html2pdf.js")
-      const container = document.createElement("div")
-      container.style.padding = "40px"
-      container.style.fontFamily = "'Noto Sans JP', sans-serif"
-      container.style.fontSize = "14px"
-      container.style.lineHeight = "1.8"
-      container.style.color = "#1a1a1a"
       const html = content
-        .replace(/^# (.+)$/gm, "<h1 style='font-size:24px;margin-bottom:16px'>$1</h1>")
-        .replace(
-          /^## (.+)$/gm,
-          "<h2 style='font-size:18px;margin-top:24px;margin-bottom:12px'>$1</h2>",
-        )
-        .replace(
-          /^### (.+)$/gm,
-          "<h3 style='font-size:16px;margin-top:16px;margin-bottom:8px'>$1</h3>",
-        )
-        .replace(/^- (.+)$/gm, "<li style='margin-left:20px'>$1</li>")
+        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+        .replace(/^- (.+)$/gm, "<li>$1</li>")
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\n\n/g, "<br><br>")
         .replace(/\n/g, "<br>")
-      container.innerHTML = html
+
+      // iframe で CSS を隔離して html2canvas の lab() エラーを回避
+      const iframe = document.createElement("iframe")
+      iframe.style.position = "fixed"
+      iframe.style.left = "-9999px"
+      iframe.style.width = "794px" // A4 幅
+      iframe.style.height = "1123px"
+      document.body.appendChild(iframe)
+
+      const iframeDoc = iframe.contentDocument
+      if (!iframeDoc) throw new Error("iframe document not available")
+
+      iframeDoc.open()
+      iframeDoc.write(`<!DOCTYPE html>
+<html><head><style>
+  body { font-family: sans-serif; font-size: 14px; line-height: 1.8; color: #1a1a1a; padding: 40px; margin: 0; }
+  h1 { font-size: 24px; margin: 0 0 16px; }
+  h2 { font-size: 18px; margin: 24px 0 12px; }
+  h3 { font-size: 16px; margin: 16px 0 8px; }
+  li { margin-left: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
+  th { background: #f5f5f5; font-weight: 600; }
+</style></head><body>${html}</body></html>`)
+      iframeDoc.close()
+
+      const { default: html2pdf } = await import("html2pdf.js")
       await html2pdf()
         .set({
           margin: 10,
           filename: "proposal.pdf",
-          html2canvas: { scale: 2 },
+          html2canvas: { scale: 2, useCORS: true },
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         })
-        .from(container)
+        .from(iframeDoc.body)
         .save()
+
+      document.body.removeChild(iframe)
     } finally {
       setGeneratingPdf(false)
     }
