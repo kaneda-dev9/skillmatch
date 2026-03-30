@@ -1,6 +1,6 @@
-import { Output, generateText } from "ai"
-import { matchEvaluationSchema } from "@/lib/validations/shared"
+import { generateText, Output } from "ai"
 import type { MatchEvaluation } from "@/lib/validations/shared"
+import { matchEvaluationSchema } from "@/lib/validations/shared"
 import type { Availability, Skill, SoftSkill } from "@/types"
 import { llm } from "./provider"
 

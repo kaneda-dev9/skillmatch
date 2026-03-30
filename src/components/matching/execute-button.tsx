@@ -16,10 +16,7 @@ export function ExecuteMatchingButton({
   variant = "default",
   size = "default",
 }: ExecuteMatchingButtonProps) {
-  const [state, action, isPending] = useActionState(
-    () => executeMatching(projectId),
-    null,
-  )
+  const [state, action, isPending] = useActionState(() => executeMatching(projectId), null)
 
   return (
     <form action={action}>

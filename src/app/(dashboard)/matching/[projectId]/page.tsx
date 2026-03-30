@@ -2,10 +2,10 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { getMatchResults } from "@/actions/matching"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { ExecuteMatchingButton } from "@/components/matching/execute-button"
 import { MatchingCard } from "@/components/matching/matching-card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
 
 interface PageProps {
@@ -17,11 +17,7 @@ export default async function MatchingResultPage({ params }: PageProps) {
   const supabase = await createClient()
 
   // 案件情報を取得
-  const { data: project } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", projectId)
-    .single()
+  const { data: project } = await supabase.from("projects").select("*").eq("id", projectId).single()
 
   if (!project) notFound()
 

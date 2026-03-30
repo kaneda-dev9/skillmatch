@@ -17,11 +17,7 @@ export async function executeMatching(projectId: string) {
   if (!profile) return { error: "ユーザープロフィールが見つかりません" }
 
   // 案件を取得
-  const { data: project } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", projectId)
-    .single()
+  const { data: project } = await supabase.from("projects").select("*").eq("id", projectId).single()
 
   if (!project) return { error: "案件が見つかりません" }
   if (!project.embedding) {
@@ -52,22 +48,34 @@ export async function executeMatching(projectId: string) {
   }
 
   const evaluations = await Promise.allSettled(
-    candidates.map((engineer: { id: string; name: string; skills: unknown; experience_years: number; industries: string[]; availability: unknown; soft_skills: unknown }) =>
-      evaluateEngineer(projectForEval, {
-        name: engineer.name,
-        skills: engineer.skills as Skill[],
-        experience_years: engineer.experience_years,
-        industries: engineer.industries,
-        availability: engineer.availability as Availability,
-        soft_skills: engineer.soft_skills as SoftSkill[],
-      }).then((evaluation) => ({
-        engineer_id: engineer.id,
-        evaluation,
-      })),
+    candidates.map(
+      (engineer: {
+        id: string
+        name: string
+        skills: unknown
+        experience_years: number
+        industries: string[]
+        availability: unknown
+        soft_skills: unknown
+      }) =>
+        evaluateEngineer(projectForEval, {
+          name: engineer.name,
+          skills: engineer.skills as Skill[],
+          experience_years: engineer.experience_years,
+          industries: engineer.industries,
+          availability: engineer.availability as Availability,
+          soft_skills: engineer.soft_skills as SoftSkill[],
+        }).then((evaluation) => ({
+          engineer_id: engineer.id,
+          evaluation,
+        })),
     ),
   )
 
-  type EvalResult = { engineer_id: string; evaluation: Awaited<ReturnType<typeof evaluateEngineer>> }
+  type EvalResult = {
+    engineer_id: string
+    evaluation: Awaited<ReturnType<typeof evaluateEngineer>>
+  }
   const successfulResults = evaluations
     .filter((r): r is PromiseFulfilledResult<EvalResult> => r.status === "fulfilled")
     .map((r) => r.value)
