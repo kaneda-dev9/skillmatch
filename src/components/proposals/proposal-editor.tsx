@@ -32,52 +32,74 @@ export function ProposalEditor({
   async function handleDownloadPdf() {
     setGeneratingPdf(true)
     try {
-      const html = content
-        .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-        .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-        .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-        .replace(/^- (.+)$/gm, "<li>$1</li>")
-        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-        .replace(/\n\n/g, "<br><br>")
-        .replace(/\n/g, "<br>")
+      const { jsPDF } = await import("jspdf")
+      const doc = new jsPDF({ unit: "mm", format: "a4" })
 
-      // iframe で CSS を隔離して html2canvas の lab() エラーを回避
-      const iframe = document.createElement("iframe")
-      iframe.style.position = "fixed"
-      iframe.style.left = "-9999px"
-      iframe.style.width = "794px" // A4 幅
-      iframe.style.height = "1123px"
-      document.body.appendChild(iframe)
+      const pageWidth = doc.internal.pageSize.getWidth()
+      const margin = 15
+      const maxWidth = pageWidth - margin * 2
+      let y = margin
 
-      const iframeDoc = iframe.contentDocument
-      if (!iframeDoc) throw new Error("iframe document not available")
+      const lines = content.split("\n")
 
-      iframeDoc.open()
-      iframeDoc.write(`<!DOCTYPE html>
-<html><head><style>
-  body { font-family: sans-serif; font-size: 14px; line-height: 1.8; color: #1a1a1a; padding: 40px; margin: 0; }
-  h1 { font-size: 24px; margin: 0 0 16px; }
-  h2 { font-size: 18px; margin: 24px 0 12px; }
-  h3 { font-size: 16px; margin: 16px 0 8px; }
-  li { margin-left: 20px; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
-  th { background: #f5f5f5; font-weight: 600; }
-</style></head><body>${html}</body></html>`)
-      iframeDoc.close()
+      for (const line of lines) {
+        // ページ送り
+        if (y > doc.internal.pageSize.getHeight() - margin) {
+          doc.addPage()
+          y = margin
+        }
 
-      const { default: html2pdf } = await import("html2pdf.js")
-      await html2pdf()
-        .set({
-          margin: 10,
-          filename: "proposal.pdf",
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(iframeDoc.body)
-        .save()
+        if (line.startsWith("# ")) {
+          doc.setFontSize(18)
+          doc.setFont("helvetica", "bold")
+          const text = line.replace(/^# /, "")
+          doc.text(text, margin, y)
+          y += 10
+        } else if (line.startsWith("## ")) {
+          doc.setFontSize(14)
+          doc.setFont("helvetica", "bold")
+          const text = line.replace(/^## /, "")
+          y += 4
+          doc.text(text, margin, y)
+          y += 8
+        } else if (line.startsWith("### ")) {
+          doc.setFontSize(12)
+          doc.setFont("helvetica", "bold")
+          const text = line.replace(/^### /, "")
+          y += 2
+          doc.text(text, margin, y)
+          y += 7
+        } else if (line.startsWith("- ")) {
+          doc.setFontSize(10)
+          doc.setFont("helvetica", "normal")
+          const text = `• ${line.replace(/^- /, "")}`
+          const wrapped = doc.splitTextToSize(text, maxWidth - 5)
+          doc.text(wrapped, margin + 3, y)
+          y += wrapped.length * 5
+        } else if (line.startsWith("---")) {
+          y += 2
+          doc.setDrawColor(200)
+          doc.line(margin, y, pageWidth - margin, y)
+          y += 4
+        } else if (line.trim() === "") {
+          y += 3
+        } else {
+          doc.setFontSize(10)
+          doc.setFont("helvetica", "normal")
+          const clean = line.replace(/\*\*(.+?)\*\*/g, "$1")
+          const wrapped = doc.splitTextToSize(clean, maxWidth)
+          for (const wline of wrapped) {
+            if (y > doc.internal.pageSize.getHeight() - margin) {
+              doc.addPage()
+              y = margin
+            }
+            doc.text(wline, margin, y)
+            y += 5
+          }
+        }
+      }
 
-      document.body.removeChild(iframe)
+      doc.save("proposal.pdf")
     } finally {
       setGeneratingPdf(false)
     }
