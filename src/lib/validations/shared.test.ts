@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { availabilitySchema, skillSchema } from "./shared"
+import { availabilitySchema, matchEvaluationSchema, skillSchema } from "./shared"
 
 describe("skillSchema", () => {
   it("有効なスキルを通す", () => {
@@ -34,5 +34,45 @@ describe("availabilitySchema", () => {
       location: "東京",
     })
     expect(result.success).toBe(true)
+  })
+})
+
+describe("matchEvaluationSchema", () => {
+  it("有効な評価結果を通す", () => {
+    const result = matchEvaluationSchema.safeParse({
+      overall_score: 85,
+      skill_score: 90,
+      experience_score: 80,
+      industry_score: 75,
+      condition_score: 88,
+      soft_skill_score: 82,
+      ai_reasoning: "React/TypeScript の実務経験が豊富で、即戦力として期待できる。",
+    })
+    expect(result.success).toBe(true)
+  })
+
+  it("スコアが数値でない場合に拒否する", () => {
+    const result = matchEvaluationSchema.safeParse({
+      overall_score: "high",
+      skill_score: 90,
+      experience_score: 80,
+      industry_score: 75,
+      condition_score: 88,
+      soft_skill_score: 82,
+      ai_reasoning: "テスト",
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it("ai_reasoning が欠けている場合に拒否する", () => {
+    const result = matchEvaluationSchema.safeParse({
+      overall_score: 85,
+      skill_score: 90,
+      experience_score: 80,
+      industry_score: 75,
+      condition_score: 88,
+      soft_skill_score: 82,
+    })
+    expect(result.success).toBe(false)
   })
 })
