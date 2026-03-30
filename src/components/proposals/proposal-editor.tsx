@@ -65,6 +65,9 @@ export function ProposalEditor({
   @media print {
     body { padding: 0; margin: 0; background: white; color: black; }
     a { color: black; text-decoration: none; }
+    h1, h2, h3 { break-after: avoid; }
+    table, pre, blockquote, ul, ol { break-inside: avoid; }
+    p { orphans: 3; widows: 3; }
   }
 </style>
 </head><body>
