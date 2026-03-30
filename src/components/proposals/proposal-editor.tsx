@@ -3,6 +3,7 @@
 import { Check, Copy, Save } from "lucide-react"
 import { useState } from "react"
 import Markdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { saveProposal, updateProposal } from "@/actions/proposals"
 import { Button } from "@/components/ui/button"
 
@@ -56,7 +57,7 @@ export function ProposalEditor({
       <div className="rounded-lg border p-4">
         <h3 className="mb-3 text-sm font-semibold text-muted-foreground">プレビュー</h3>
         <div className="prose prose-sm dark:prose-invert max-w-none">
-          <Markdown>{content}</Markdown>
+          <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
         </div>
       </div>
 

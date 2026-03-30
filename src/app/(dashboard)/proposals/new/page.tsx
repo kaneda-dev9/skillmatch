@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { Suspense, useEffect } from "react"
 import Markdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { PdfDownloadButton } from "@/components/proposals/pdf-download-button"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
 import { Button } from "@/components/ui/button"
@@ -70,7 +71,7 @@ function NewProposalContent() {
           <div className="rounded-lg border p-4">
             <h3 className="mb-3 text-sm font-semibold text-muted-foreground">プレビュー</h3>
             <div className="prose prose-sm dark:prose-invert max-w-none">
-              <Markdown>{completion}</Markdown>
+              <Markdown remarkPlugins={[remarkGfm]}>{completion}</Markdown>
             </div>
           </div>
           <div className="rounded-lg border p-4">
