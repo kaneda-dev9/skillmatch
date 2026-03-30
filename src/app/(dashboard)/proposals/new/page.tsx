@@ -4,7 +4,7 @@ import { useCompletion } from "@ai-sdk/react"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { Suspense, useEffect } from "react"
+import { Suspense, useEffect, useRef } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
@@ -23,6 +23,7 @@ export default function NewProposalPage() {
 function NewProposalContent() {
   const searchParams = useSearchParams()
   const matchId = searchParams.get("matchId")
+  const hasStarted = useRef(false)
 
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/proposals/generate",
@@ -30,7 +31,8 @@ function NewProposalContent() {
   })
 
   useEffect(() => {
-    if (matchId) {
+    if (matchId && !hasStarted.current) {
+      hasStarted.current = true
       complete("", { body: { matchId } })
     }
   }, [matchId, complete])
@@ -87,6 +89,23 @@ function NewProposalContent() {
       )}
 
       {!isLoading && completion && <ProposalEditor content={completion} matchId={matchId} />}
+
+      {!isLoading && !completion && !error && (
+        <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+          <p>提案書の生成が完了していません</p>
+          <Button
+            variant="outline"
+            size="sm"
+            className="mt-3"
+            onClick={() => {
+              hasStarted.current = true
+              complete("", { body: { matchId } })
+            }}
+          >
+            再生成
+          </Button>
+        </div>
+      )}
     </div>
   )
 }
