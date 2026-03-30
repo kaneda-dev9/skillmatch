@@ -61,8 +61,9 @@ export function ProposalEditor({
 <html><head>
 <style>${styles}</style>
 <style>
+  @page { margin: 15mm; }
   @media print {
-    body { padding: 20px; background: white; color: black; }
+    body { padding: 0; margin: 0; background: white; color: black; }
     a { color: black; text-decoration: none; }
   }
 </style>
