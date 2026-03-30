@@ -1,5 +1,6 @@
 "use client"
 
+import { FileText } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
@@ -79,7 +80,7 @@ export function MatchingCard({ match }: MatchingCardProps) {
         ))}
       </div>
 
-      <div className="mt-3 border-t pt-3">
+      <div className="mt-3 flex items-center gap-3 border-t pt-3">
         <button
           type="button"
           onClick={() => setExpanded(!expanded)}
@@ -87,6 +88,13 @@ export function MatchingCard({ match }: MatchingCardProps) {
         >
           {expanded ? "▼" : "▶"} AI評価
         </button>
+        <Link
+          href={`/proposals/new?matchId=${match.id}`}
+          className="flex items-center gap-1 text-sm text-primary hover:underline"
+        >
+          <FileText className="h-3 w-3" />
+          提案書を生成
+        </Link>
         {expanded && <p className="mt-2 text-sm text-muted-foreground">{match.ai_reasoning}</p>}
       </div>
     </div>

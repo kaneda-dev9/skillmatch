@@ -38,10 +38,7 @@ export async function updateProposal(id: string, content: string) {
   } = await supabase.auth.getUser()
   if (!user) return { error: "認証が必要です" }
 
-  const { error } = await supabase
-    .from("proposals")
-    .update({ content })
-    .eq("id", id)
+  const { error } = await supabase.from("proposals").update({ content }).eq("id", id)
 
   if (error) return { error: error.message }
 

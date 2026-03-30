@@ -4,18 +4,27 @@ import { useCompletion } from "@ai-sdk/react"
 import { ArrowLeft, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import Markdown from "react-markdown"
 import { PdfDownloadButton } from "@/components/proposals/pdf-download-button"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
 import { Button } from "@/components/ui/button"
 
 export default function NewProposalPage() {
+  return (
+    <Suspense fallback={<div className="py-12 text-center text-muted-foreground">読み込み中...</div>}>
+      <NewProposalContent />
+    </Suspense>
+  )
+}
+
+function NewProposalContent() {
   const searchParams = useSearchParams()
   const matchId = searchParams.get("matchId")
 
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/proposals/generate",
+    streamProtocol: "text",
   })
 
   useEffect(() => {

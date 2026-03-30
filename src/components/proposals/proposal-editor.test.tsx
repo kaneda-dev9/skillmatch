@@ -8,9 +8,10 @@ vi.mock("@/actions/proposals", () => ({
 }))
 
 vi.mock("react-markdown", () => ({
-  default: ({ children }: { children: string }) => (
-    <div dangerouslySetInnerHTML={{ __html: children.replace(/^#+\s+(.+)$/m, "$1") }} />
-  ),
+  default: ({ children }: { children: string }) => {
+    const text = children.replace(/^#+\s+/gm, "")
+    return <div>{text}</div>
+  },
 }))
 
 describe("ProposalEditor", () => {

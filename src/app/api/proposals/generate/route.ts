@@ -67,5 +67,5 @@ export async function POST(request: Request) {
     messages: [{ role: "user", content: prompt }],
   })
 
-  return result.toDataStreamResponse()
+  return result.toTextStreamResponse()
 }
