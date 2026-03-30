@@ -19,7 +19,6 @@ import { Label } from "@/components/ui/label"
 export default function SignupPage() {
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     setPending(true)
@@ -28,27 +27,7 @@ export default function SignupPage() {
     if (result?.error) {
       setError(result.error)
       setPending(false)
-    } else if (result?.success) {
-      setEmailSent(true)
     }
-  }
-
-  if (emailSent) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">確認メールを送信しました</CardTitle>
-          <CardDescription>
-            メールに記載されたリンクをクリックして、アカウントを有効化してください。
-          </CardDescription>
-        </CardHeader>
-        <CardFooter className="justify-center">
-          <Link href="/login" className="text-sm text-primary underline">
-            ログイン画面に戻る
-          </Link>
-        </CardFooter>
-      </Card>
-    )
   }
 
   return (
