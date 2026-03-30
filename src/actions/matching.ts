@@ -84,7 +84,7 @@ export async function executeMatching(projectId: string) {
     return { error: "マッチング評価に失敗しました。しばらく待ってから再試行してください。" }
   }
 
-  // 既存結果を削除
+  // 既存結果を削除（proposals は ON DELETE CASCADE で自動削除）
   await supabase.from("matches").delete().eq("project_id", projectId)
 
   // 新しい結果を挿入
