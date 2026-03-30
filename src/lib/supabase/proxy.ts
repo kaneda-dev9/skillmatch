@@ -32,8 +32,17 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/signup")
+    !request.nextUrl.pathname.startsWith("/signup") &&
+    !request.nextUrl.pathname.startsWith("/auth/callback")
   ) {
+    // OAuth code が付いている場合は /auth/callback に転送
+    const code = request.nextUrl.searchParams.get("code")
+    if (code) {
+      const url = request.nextUrl.clone()
+      url.pathname = "/auth/callback"
+      return NextResponse.redirect(url)
+    }
+
     const url = request.nextUrl.clone()
     url.pathname = "/login"
     return NextResponse.redirect(url)
