@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, Columns2, Copy, Save, SquareStack } from "lucide-react"
+import { Check, Columns2, Copy, RotateCcw, Save, SquareStack } from "lucide-react"
 import { useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -97,6 +97,16 @@ export function ProposalEditor({
             </>
           )}
         </Button>
+        {content !== initialContent && (
+          <Button
+            onClick={() => setContent(initialContent)}
+            variant="ghost"
+            size="sm"
+          >
+            <RotateCcw className="mr-2 h-4 w-4" />
+            元に戻す
+          </Button>
+        )}
       </div>
     </div>
   )
