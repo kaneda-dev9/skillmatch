@@ -11,15 +11,6 @@ export function LogoutButton() {
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-
-    // Supabase のセッションクッキーを明示的に削除
-    document.cookie.split(";").forEach((c) => {
-      const name = c.trim().split("=")[0]
-      if (name.startsWith("sb-")) {
-        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
-      }
-    })
-
     router.push("/login")
     router.refresh()
   }
