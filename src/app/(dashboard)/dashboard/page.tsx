@@ -37,11 +37,6 @@ export default async function DashboardPage() {
           </Card>
         ))}
       </div>
-      <Card>
-        <CardContent className="flex items-center justify-center py-12 text-muted-foreground">
-          <p className="text-sm">最近のアクティビティは Phase 6 で実装予定</p>
-        </CardContent>
-      </Card>
     </div>
   )
 }

@@ -1,5 +1,3 @@
-import { LogOut } from "lucide-react"
-import { logout } from "@/actions/auth"
 import { MobileSidebar } from "@/components/layout/mobile-sidebar"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -10,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { createClient } from "@/lib/supabase/server"
+import { LogoutButton } from "./logout-button"
 
 export async function Header() {
   const supabase = await createClient()
@@ -42,19 +41,11 @@ export async function Header() {
             </Button>
           }
         />
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="min-w-56">
           <DropdownMenuItem className="text-xs text-muted-foreground" disabled>
             {user?.email}
           </DropdownMenuItem>
-          <form action={logout}>
-            <DropdownMenuItem
-              nativeButton
-              render={<button type="submit" className="w-full cursor-pointer" />}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              ログアウト
-            </DropdownMenuItem>
-          </form>
+          <LogoutButton />
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
