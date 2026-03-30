@@ -161,23 +161,33 @@ export function ProposalEditor({
           <Download className="mr-1.5 h-4 w-4" />
           {generatingPdf ? "生成中..." : "PDF ダウンロード"}
         </Button>
-        <div className="flex gap-1">
-          <Button
-            variant={layout === "split" ? "default" : "outline"}
-            size="sm"
+        <div className="flex rounded-lg border p-0.5">
+          <button
+            type="button"
             onClick={() => setLayout("split")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors",
+              layout === "split"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
           >
-            <Columns2 className="mr-1.5 h-4 w-4" />
+            <Columns2 className="h-3.5 w-3.5" />
             2カラム
-          </Button>
-          <Button
-            variant={layout === "tabs" ? "default" : "outline"}
-            size="sm"
+          </button>
+          <button
+            type="button"
             onClick={() => setLayout("tabs")}
+            className={cn(
+              "flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-colors",
+              layout === "tabs"
+                ? "bg-primary text-primary-foreground"
+                : "text-muted-foreground hover:text-foreground",
+            )}
           >
-            <SquareStack className="mr-1.5 h-4 w-4" />
+            <SquareStack className="h-3.5 w-3.5" />
             タブ
-          </Button>
+          </button>
         </div>
       </div>
 
