@@ -54,6 +54,36 @@ export function ProposalEditor({
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const isModified = content !== initialContent
+
+  const actionButtons = (
+    <div className="flex items-center gap-1">
+      <Button onClick={handleSave} disabled={saving || readOnly} size="sm">
+        <Save className="mr-1.5 h-3.5 w-3.5" />
+        {saving ? "保存中..." : proposalId ? "更新" : "保存"}
+      </Button>
+      <Button onClick={handleCopy} variant="outline" size="sm">
+        {copied ? (
+          <>
+            <Check className="mr-1.5 h-3.5 w-3.5" />
+            コピー済み
+          </>
+        ) : (
+          <>
+            <Copy className="mr-1.5 h-3.5 w-3.5" />
+            コピー
+          </>
+        )}
+      </Button>
+      {isModified && (
+        <Button onClick={() => setContent(initialContent)} variant="ghost" size="sm">
+          <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+          元に戻す
+        </Button>
+      )}
+    </div>
+  )
+
   const previewPanel = (
     <div className="rounded-lg border p-4">
       {layout === "split" && (
@@ -67,47 +97,19 @@ export function ProposalEditor({
 
   const editorPanel = (
     <div className="flex flex-col rounded-lg border p-4">
-      {layout === "split" && (
-        <h3 className="mb-3 text-sm font-semibold text-muted-foreground">エディタ</h3>
-      )}
+      <div className="mb-3 flex items-center justify-between">
+        {layout === "split" && (
+          <h3 className="text-sm font-semibold text-muted-foreground">エディタ</h3>
+        )}
+        <div className={layout === "tabs" ? "ml-auto" : ""}>{actionButtons}</div>
+      </div>
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
         disabled={readOnly}
         className="min-h-96 w-full flex-1 resize-y rounded-md border bg-background p-3 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
       />
-
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
-
-      <div className="sticky bottom-0 mt-3 flex gap-2 border-t bg-background pt-3">
-        <Button onClick={handleSave} disabled={saving || readOnly} size="sm">
-          <Save className="mr-2 h-4 w-4" />
-          {saving ? "保存中..." : proposalId ? "更新" : "保存"}
-        </Button>
-        <Button onClick={handleCopy} variant="outline" size="sm">
-          {copied ? (
-            <>
-              <Check className="mr-2 h-4 w-4" />
-              コピー済み
-            </>
-          ) : (
-            <>
-              <Copy className="mr-2 h-4 w-4" />
-              コピー
-            </>
-          )}
-        </Button>
-        {content !== initialContent && (
-          <Button
-            onClick={() => setContent(initialContent)}
-            variant="ghost"
-            size="sm"
-          >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            元に戻す
-          </Button>
-        )}
-      </div>
     </div>
   )
 
