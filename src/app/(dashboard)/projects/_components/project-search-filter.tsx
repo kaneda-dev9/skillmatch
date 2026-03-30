@@ -46,7 +46,9 @@ export function ProjectSearchFilter() {
       </div>
       <Select value={status} onValueChange={(v) => v && setStatus(v)}>
         <SelectTrigger className="w-32">
-          <SelectValue placeholder="ステータス" />
+          <SelectValue>
+            {status === "all" ? "すべて" : status === "open" ? "募集中" : "終了"}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">すべて</SelectItem>

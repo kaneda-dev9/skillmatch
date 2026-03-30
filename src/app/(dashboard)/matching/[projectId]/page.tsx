@@ -6,6 +6,7 @@ import { ExecuteMatchingButton } from "@/components/matching/execute-button"
 import { MatchingCard } from "@/components/matching/matching-card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { SkillBadge } from "@/components/ui/skill-badge"
 import { createClient } from "@/lib/supabase/server"
 
 interface PageProps {
@@ -33,7 +34,9 @@ export default async function MatchingResultPage({ params }: PageProps) {
       .select("id, match_id")
       .in("match_id", matchIds)
     if (proposals) {
-      proposalMap = Object.fromEntries(proposals.map((p: { match_id: string; id: string }) => [p.match_id, p.id]))
+      proposalMap = Object.fromEntries(
+        proposals.map((p: { match_id: string; id: string }) => [p.match_id, p.id]),
+      )
     }
   }
 
@@ -58,9 +61,7 @@ export default async function MatchingResultPage({ params }: PageProps) {
       {/* 案件サマリー */}
       <div className="flex flex-wrap gap-2">
         {project.required_skills.map((skill: { name: string }) => (
-          <Badge key={skill.name} variant="secondary">
-            {skill.name}
-          </Badge>
+          <SkillBadge key={skill.name} name={skill.name} />
         ))}
         <Badge variant="outline">{project.experience_years}年以上</Badge>
         {project.industries.map((ind: string) => (

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ExecuteMatchingButton } from "@/components/matching/execute-button"
-import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SkillBadge } from "@/components/ui/skill-badge"
 import { createClient } from "@/lib/supabase/server"
 
 export default async function MatchingPage() {
@@ -63,9 +63,7 @@ export default async function MatchingPage() {
               <CardContent>
                 <div className="mb-3 flex flex-wrap gap-1">
                   {project.required_skills.slice(0, 3).map((skill: { name: string }) => (
-                    <Badge key={skill.name} variant="secondary">
-                      {skill.name}
-                    </Badge>
+                    <SkillBadge key={skill.name} name={skill.name} />
                   ))}
                 </div>
 

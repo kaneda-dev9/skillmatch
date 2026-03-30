@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
+import { SkillBadge } from "@/components/ui/skill-badge"
 import {
   Table,
   TableBody,
@@ -55,12 +55,12 @@ export function EngineerTable({ engineers }: EngineerTableProps) {
               <TableCell>
                 <div className="flex flex-wrap gap-1">
                   {engineer.skills.slice(0, 3).map((skill) => (
-                    <Badge key={skill.name} variant="secondary">
-                      {skill.name}
-                    </Badge>
+                    <SkillBadge key={skill.name} name={skill.name} />
                   ))}
                   {engineer.skills.length > 3 && (
-                    <Badge variant="outline">+{engineer.skills.length - 3}</Badge>
+                    <span className="text-xs text-muted-foreground">
+                      +{engineer.skills.length - 3}
+                    </span>
                   )}
                 </div>
               </TableCell>
