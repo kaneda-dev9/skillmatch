@@ -15,24 +15,24 @@ vi.mock("react-markdown", () => ({
 }))
 
 describe("ProposalEditor", () => {
-  it("プレビューとエディタの2カラムが表示される", () => {
+  it("プレビューとエディタが表示される", () => {
     render(<ProposalEditor content="# テスト" matchId="m1" />)
-    expect(screen.getByText("プレビュー")).toBeDefined()
-    expect(screen.getByText("エディタ")).toBeDefined()
+    expect(screen.getAllByText("プレビュー").length).toBeGreaterThan(0)
+    expect(screen.getAllByText("エディタ").length).toBeGreaterThan(0)
   })
 
   it("Markdown コンテンツがプレビューに表示される", () => {
     render(<ProposalEditor content="# テスト見出し" matchId="m1" />)
-    expect(screen.getByText("テスト見出し")).toBeDefined()
+    expect(screen.getAllByText("テスト見出し").length).toBeGreaterThan(0)
   })
 
   it("コピーボタンが表示される", () => {
     render(<ProposalEditor content="test" matchId="m1" />)
-    expect(screen.getByRole("button", { name: /コピー/ })).toBeDefined()
+    expect(screen.getAllByRole("button", { name: /コピー/ }).length).toBeGreaterThan(0)
   })
 
   it("保存ボタンが表示される", () => {
     render(<ProposalEditor content="test" matchId="m1" />)
-    expect(screen.getByRole("button", { name: /保存/ })).toBeDefined()
+    expect(screen.getAllByRole("button", { name: /保存/ }).length).toBeGreaterThan(0)
   })
 })

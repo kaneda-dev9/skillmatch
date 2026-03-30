@@ -13,7 +13,9 @@ import { Button } from "@/components/ui/button"
 
 export default function NewProposalPage() {
   return (
-    <Suspense fallback={<div className="py-12 text-center text-muted-foreground">読み込み中...</div>}>
+    <Suspense
+      fallback={<div className="py-12 text-center text-muted-foreground">読み込み中...</div>}
+    >
       <NewProposalContent />
     </Suspense>
   )
