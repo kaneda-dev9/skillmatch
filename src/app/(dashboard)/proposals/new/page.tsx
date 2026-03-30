@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { ProposalEditor } from "@/components/proposals/proposal-editor"
+import { saveProposal } from "@/actions/proposals"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 
@@ -26,10 +26,21 @@ function NewProposalContent() {
   const router = useRouter()
   const matchId = searchParams.get("matchId")
   const [checking, setChecking] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const { completion, isLoading, complete, error } = useCompletion({
     api: "/api/proposals/generate",
     streamProtocol: "text",
+    onFinish: async (_prompt, finalCompletion) => {
+      if (!matchId || !finalCompletion) return
+      setSaving(true)
+      const result = await saveProposal(matchId, finalCompletion)
+      if ("id" in result) {
+        router.replace(`/proposals/${result.id}`)
+      } else {
+        setSaving(false)
+      }
+    },
   })
 
   // 既に保存済みの提案書があればリダイレクト
@@ -88,10 +99,10 @@ function NewProposalContent() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold">提案書生成</h1>
-          {isLoading && (
+          {(isLoading || saving) && (
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 className="h-3 w-3 animate-spin" />
-              生成中...
+              {saving ? "保存中..." : "生成中..."}
             </p>
           )}
         </div>
@@ -102,7 +113,7 @@ function NewProposalContent() {
       )}
 
       {/* 未開始: 生成ボタン */}
-      {!isLoading && !completion && (
+      {!isLoading && !completion && !saving && (
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <p className="mb-4">提案書を AI で自動生成します</p>
           <Button onClick={handleGenerate}>
@@ -112,28 +123,14 @@ function NewProposalContent() {
         </div>
       )}
 
-      {/* 生成中: ストリーミングプレビュー */}
-      {isLoading && completion && (
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-lg border p-4">
-            <h3 className="mb-3 text-sm font-semibold text-muted-foreground">プレビュー</h3>
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <Markdown remarkPlugins={[remarkGfm]}>{completion}</Markdown>
-            </div>
-          </div>
-          <div className="rounded-lg border p-4">
-            <h3 className="mb-3 text-sm font-semibold text-muted-foreground">エディタ</h3>
-            <textarea
-              value={completion}
-              disabled
-              className="h-96 w-full resize-y rounded-md border bg-muted p-3 font-mono text-sm"
-            />
+      {/* 生成中 / 保存中: ストリーミングプレビュー */}
+      {(isLoading || saving) && completion && (
+        <div className="rounded-lg border p-6">
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <Markdown remarkPlugins={[remarkGfm]}>{completion}</Markdown>
           </div>
         </div>
       )}
-
-      {/* 生成完了: エディタ */}
-      {!isLoading && completion && <ProposalEditor content={completion} matchId={matchId} />}
     </div>
   )
 }

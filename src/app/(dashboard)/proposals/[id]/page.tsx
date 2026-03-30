@@ -54,7 +54,7 @@ export default async function ProposalDetailPage({ params }: PageProps) {
         </div>
       </div>
 
-      <ProposalEditor content={proposal.content} matchId={proposal.match_id} proposalId={id} />
+      <ProposalEditor content={proposal.content} proposalId={id} />
     </div>
   )
 }

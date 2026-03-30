@@ -4,20 +4,18 @@ import { Check, Columns2, Copy, Download, RotateCcw, Save, SquareStack } from "l
 import { useRef, useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { saveProposal, updateProposal } from "@/actions/proposals"
+import { updateProposal } from "@/actions/proposals"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface ProposalEditorProps {
   content: string
-  matchId: string
   proposalId?: string
   readOnly?: boolean
 }
 
 export function ProposalEditor({
   content: initialContent,
-  matchId,
   proposalId,
   readOnly = false,
 }: ProposalEditorProps) {
@@ -82,22 +80,16 @@ export function ProposalEditor({
   }
 
   async function handleSave() {
+    if (!proposalId) return
     setSaving(true)
     setError(null)
 
-    const result = proposalId
-      ? await updateProposal(proposalId, content)
-      : await saveProposal(matchId, content)
+    const result = await updateProposal(proposalId, content)
 
     setSaving(false)
 
     if ("error" in result && result.error) {
       setError(result.error)
-      return
-    }
-
-    if (!proposalId && "id" in result) {
-      window.location.href = `/proposals/${result.id}`
     }
   }
 
@@ -111,9 +103,9 @@ export function ProposalEditor({
 
   const actionButtons = (
     <div className="flex items-center gap-1">
-      <Button onClick={handleSave} disabled={saving || readOnly} size="sm">
+      <Button onClick={handleSave} disabled={saving || readOnly || !proposalId} size="sm">
         <Save className="mr-1.5 h-3.5 w-3.5" />
-        {saving ? "保存中..." : proposalId ? "更新" : "保存"}
+        {saving ? "更新中..." : "更新"}
       </Button>
       <Button onClick={handleCopy} variant="outline" size="sm">
         {copied ? (
