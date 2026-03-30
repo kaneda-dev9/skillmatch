@@ -79,7 +79,7 @@ export function ProposalEditor({
 
       {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
 
-      <div className="mt-3 flex gap-2">
+      <div className="sticky bottom-0 mt-3 flex gap-2 border-t bg-background pt-3">
         <Button onClick={handleSave} disabled={saving || readOnly} size="sm">
           <Save className="mr-2 h-4 w-4" />
           {saving ? "保存中..." : proposalId ? "更新" : "保存"}
