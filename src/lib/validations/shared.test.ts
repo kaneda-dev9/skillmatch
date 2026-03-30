@@ -51,9 +51,9 @@ describe("matchEvaluationSchema", () => {
     expect(result.success).toBe(true)
   })
 
-  it("スコアが 0-100 の範囲外の場合に拒否する", () => {
+  it("スコアが数値でない場合に拒否する", () => {
     const result = matchEvaluationSchema.safeParse({
-      overall_score: 101,
+      overall_score: "high",
       skill_score: 90,
       experience_score: 80,
       industry_score: 75,
@@ -64,7 +64,7 @@ describe("matchEvaluationSchema", () => {
     expect(result.success).toBe(false)
   })
 
-  it("ai_reasoning が空文字の場合に拒否する", () => {
+  it("ai_reasoning が欠けている場合に拒否する", () => {
     const result = matchEvaluationSchema.safeParse({
       overall_score: 85,
       skill_score: 90,
@@ -72,7 +72,6 @@ describe("matchEvaluationSchema", () => {
       industry_score: 75,
       condition_score: 88,
       soft_skill_score: 82,
-      ai_reasoning: "",
     })
     expect(result.success).toBe(false)
   })

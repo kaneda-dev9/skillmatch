@@ -14,16 +14,16 @@ export const availabilitySchema = z.object({
   location: z.string().nullable().default(null),
 })
 
-const scoreField = z.number().int().min(0).max(100)
-
+// Claude API の構造化出力は integer の min/max 非対応のため、制約なしで定義
+// スコア範囲（0-100）はプロンプトで指示
 export const matchEvaluationSchema = z.object({
-  overall_score: scoreField,
-  skill_score: scoreField,
-  experience_score: scoreField,
-  industry_score: scoreField,
-  condition_score: scoreField,
-  soft_skill_score: scoreField,
-  ai_reasoning: z.string().min(1),
+  overall_score: z.number(),
+  skill_score: z.number(),
+  experience_score: z.number(),
+  industry_score: z.number(),
+  condition_score: z.number(),
+  soft_skill_score: z.number(),
+  ai_reasoning: z.string(),
 })
 
 export type MatchEvaluation = z.infer<typeof matchEvaluationSchema>
