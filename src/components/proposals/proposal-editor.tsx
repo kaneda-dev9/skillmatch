@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, Columns2, Copy, RotateCcw, Save, SquareStack } from "lucide-react"
+import { Check, Columns2, Copy, Download, RotateCcw, Save, SquareStack } from "lucide-react"
 import { useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -27,6 +27,46 @@ export function ProposalEditor({
   const [error, setError] = useState<string | null>(null)
   const [layout, setLayout] = useState<"split" | "tabs">("split")
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview")
+  const [generatingPdf, setGeneratingPdf] = useState(false)
+
+  async function handleDownloadPdf() {
+    setGeneratingPdf(true)
+    try {
+      const { default: html2pdf } = await import("html2pdf.js")
+      const container = document.createElement("div")
+      container.style.padding = "40px"
+      container.style.fontFamily = "'Noto Sans JP', sans-serif"
+      container.style.fontSize = "14px"
+      container.style.lineHeight = "1.8"
+      container.style.color = "#1a1a1a"
+      const html = content
+        .replace(/^# (.+)$/gm, "<h1 style='font-size:24px;margin-bottom:16px'>$1</h1>")
+        .replace(
+          /^## (.+)$/gm,
+          "<h2 style='font-size:18px;margin-top:24px;margin-bottom:12px'>$1</h2>",
+        )
+        .replace(
+          /^### (.+)$/gm,
+          "<h3 style='font-size:16px;margin-top:16px;margin-bottom:8px'>$1</h3>",
+        )
+        .replace(/^- (.+)$/gm, "<li style='margin-left:20px'>$1</li>")
+        .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+        .replace(/\n\n/g, "<br><br>")
+        .replace(/\n/g, "<br>")
+      container.innerHTML = html
+      await html2pdf()
+        .set({
+          margin: 10,
+          filename: "proposal.pdf",
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        })
+        .from(container)
+        .save()
+    } finally {
+      setGeneratingPdf(false)
+    }
+  }
 
   async function handleSave() {
     setSaving(true)
@@ -115,24 +155,30 @@ export function ProposalEditor({
 
   return (
     <div>
-      {/* レイアウト切り替えボタン */}
-      <div className="mb-4 flex items-center justify-end gap-1">
-        <Button
-          variant={layout === "split" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setLayout("split")}
-        >
-          <Columns2 className="mr-1.5 h-4 w-4" />
-          2カラム
+      {/* ツールバー: PDF + レイアウト切り替え */}
+      <div className="mb-4 flex items-center justify-end gap-3">
+        <Button onClick={handleDownloadPdf} variant="outline" size="sm" disabled={generatingPdf}>
+          <Download className="mr-1.5 h-4 w-4" />
+          {generatingPdf ? "生成中..." : "PDF ダウンロード"}
         </Button>
-        <Button
-          variant={layout === "tabs" ? "default" : "outline"}
-          size="sm"
-          onClick={() => setLayout("tabs")}
-        >
-          <SquareStack className="mr-1.5 h-4 w-4" />
-          タブ
-        </Button>
+        <div className="flex gap-1">
+          <Button
+            variant={layout === "split" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setLayout("split")}
+          >
+            <Columns2 className="mr-1.5 h-4 w-4" />
+            2カラム
+          </Button>
+          <Button
+            variant={layout === "tabs" ? "default" : "outline"}
+            size="sm"
+            onClick={() => setLayout("tabs")}
+          >
+            <SquareStack className="mr-1.5 h-4 w-4" />
+            タブ
+          </Button>
+        </div>
       </div>
 
       {/* 2カラム */}

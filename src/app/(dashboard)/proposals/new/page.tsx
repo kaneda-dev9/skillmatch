@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation"
 import { Suspense, useEffect } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { PdfDownloadButton } from "@/components/proposals/pdf-download-button"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
 import { Button } from "@/components/ui/button"
 
@@ -87,14 +86,7 @@ function NewProposalContent() {
         </div>
       )}
 
-      {!isLoading && completion && (
-        <>
-          <ProposalEditor content={completion} matchId={matchId} />
-          <div className="flex justify-end">
-            <PdfDownloadButton content={completion} />
-          </div>
-        </>
-      )}
+      {!isLoading && completion && <ProposalEditor content={completion} matchId={matchId} />}
     </div>
   )
 }

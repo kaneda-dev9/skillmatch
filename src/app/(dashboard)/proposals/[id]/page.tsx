@@ -2,7 +2,6 @@ import { ArrowLeft, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { deleteProposal } from "@/actions/proposals"
-import { PdfDownloadButton } from "@/components/proposals/pdf-download-button"
 import { ProposalEditor } from "@/components/proposals/proposal-editor"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/server"
@@ -46,7 +45,6 @@ export default async function ProposalDetailPage({ params }: PageProps) {
           </div>
         </div>
         <div className="flex gap-2">
-          <PdfDownloadButton content={proposal.content} fileName={`proposal-${engineerName}`} />
           <form action={handleDelete}>
             <Button variant="destructive" size="sm" type="submit">
               <Trash2 className="mr-2 h-4 w-4" />
