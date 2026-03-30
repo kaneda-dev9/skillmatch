@@ -1,7 +1,7 @@
 "use client"
 
 import { Check, Columns2, Copy, Download, RotateCcw, Save, SquareStack } from "lucide-react"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { saveProposal, updateProposal } from "@/actions/proposals"
@@ -27,8 +27,24 @@ export function ProposalEditor({
   const [error, setError] = useState<string | null>(null)
   const [layout, setLayout] = useState<"split" | "tabs">("split")
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview")
+  const previewRef = useRef<HTMLDivElement>(null)
+
   function handleDownloadPdf() {
-    const html = markdownToHtml(content)
+    const previewEl = previewRef.current
+    if (!previewEl) return
+
+    const printContent = previewEl.innerHTML
+    const styles = Array.from(document.styleSheets)
+      .map((sheet) => {
+        try {
+          return Array.from(sheet.cssRules)
+            .map((rule) => rule.cssText)
+            .join("\n")
+        } catch {
+          return ""
+        }
+      })
+      .join("\n")
 
     const iframe = document.createElement("iframe")
     iframe.style.position = "fixed"
@@ -43,19 +59,16 @@ export function ProposalEditor({
     doc.open()
     doc.write(`<!DOCTYPE html>
 <html><head>
-<title>提案書</title>
+<style>${styles}</style>
 <style>
-  body { font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif; font-size: 14px; line-height: 1.8; color: #1a1a1a; padding: 40px; max-width: 800px; margin: 0 auto; }
-  h1 { font-size: 24px; margin: 0 0 16px; }
-  h2 { font-size: 18px; margin: 24px 0 12px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
-  h3 { font-size: 16px; margin: 16px 0 8px; }
-  li { margin-left: 20px; }
-  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
-  th { background: #f5f5f5; font-weight: 600; }
-  @media print { body { padding: 0; } }
+  @media print {
+    body { padding: 20px; background: white; color: black; }
+    a { color: black; text-decoration: none; }
+  }
 </style>
-</head><body>${html}</body></html>`)
+</head><body>
+<div class="prose prose-sm max-w-none" style="color: black;">${printContent}</div>
+</body></html>`)
     doc.close()
 
     iframe.onload = () => {
@@ -125,7 +138,7 @@ export function ProposalEditor({
       {layout === "split" && (
         <h3 className="mb-3 text-sm font-semibold text-muted-foreground">プレビュー</h3>
       )}
-      <div className="prose prose-sm dark:prose-invert max-w-none">
+      <div ref={previewRef} className="prose prose-sm dark:prose-invert max-w-none">
         <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       </div>
     </div>
@@ -231,37 +244,3 @@ export function ProposalEditor({
   )
 }
 
-function markdownToHtml(md: string): string {
-  // テーブルを先に変換（改行ベースの置換の前に処理）
-  const tableRegex = /(?:^\|.+\|$\n?)+/gm
-  const withTables = md.replace(tableRegex, (block) => {
-    const rows = block.trim().split("\n")
-    if (rows.length < 2) return block
-
-    // セパレータ行（|---|---|）を検出してスキップ
-    const isHeader = rows.length >= 2 && /^\|[\s-:|]+\|$/.test(rows[1])
-    const dataRows = isHeader ? [rows[0], ...rows.slice(2)] : rows
-
-    let html = "<table>"
-    for (let i = 0; i < dataRows.length; i++) {
-      const cells = dataRows[i]
-        .split("|")
-        .slice(1, -1)
-        .map((c) => c.trim())
-      const tag = isHeader && i === 0 ? "th" : "td"
-      html += `<tr>${cells.map((c) => `<${tag}>${c}</${tag}>`).join("")}</tr>`
-    }
-    html += "</table>"
-    return html
-  })
-
-  // 残りの Markdown 要素を変換
-  return withTables
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n\n/g, "<br><br>")
-    .replace(/\n/g, "<br>")
-}
