@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, Copy, Save } from "lucide-react"
+import { Check, Columns2, Copy, Save, SquareStack } from "lucide-react"
 import { useState } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -25,6 +25,7 @@ export function ProposalEditor({
   const [copied, setCopied] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [layout, setLayout] = useState<"split" | "tabs">("split")
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview")
 
   async function handleSave() {
@@ -55,9 +56,9 @@ export function ProposalEditor({
 
   const previewPanel = (
     <div className="rounded-lg border p-4">
-      <h3 className="mb-3 hidden text-sm font-semibold text-muted-foreground lg:block">
-        プレビュー
-      </h3>
+      {layout === "split" && (
+        <h3 className="mb-3 text-sm font-semibold text-muted-foreground">プレビュー</h3>
+      )}
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
       </div>
@@ -66,7 +67,9 @@ export function ProposalEditor({
 
   const editorPanel = (
     <div className="rounded-lg border p-4">
-      <h3 className="mb-3 hidden text-sm font-semibold text-muted-foreground lg:block">エディタ</h3>
+      {layout === "split" && (
+        <h3 className="mb-3 text-sm font-semibold text-muted-foreground">エディタ</h3>
+      )}
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
@@ -99,43 +102,67 @@ export function ProposalEditor({
   )
 
   return (
-    <>
-      {/* デスクトップ: 2カラム */}
-      <div className="hidden gap-4 lg:grid lg:grid-cols-2">
-        {previewPanel}
-        {editorPanel}
+    <div>
+      {/* レイアウト切り替えボタン */}
+      <div className="mb-4 flex items-center justify-end gap-1">
+        <Button
+          variant={layout === "split" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setLayout("split")}
+          aria-label="2カラム表示"
+        >
+          <Columns2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant={layout === "tabs" ? "default" : "outline"}
+          size="sm"
+          onClick={() => setLayout("tabs")}
+          aria-label="タブ表示"
+        >
+          <SquareStack className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* モバイル/タブレット: タブ切り替え */}
-      <div className="lg:hidden">
-        <div className="mb-4 flex border-b">
-          <button
-            type="button"
-            onClick={() => setActiveTab("preview")}
-            className={cn(
-              "px-4 py-2 text-sm font-medium",
-              activeTab === "preview"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            プレビュー
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("editor")}
-            className={cn(
-              "px-4 py-2 text-sm font-medium",
-              activeTab === "editor"
-                ? "border-b-2 border-primary text-primary"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            エディタ
-          </button>
+      {/* 2カラム */}
+      {layout === "split" && (
+        <div className="grid grid-cols-2 gap-4">
+          {previewPanel}
+          {editorPanel}
         </div>
-        {activeTab === "preview" ? previewPanel : editorPanel}
-      </div>
-    </>
+      )}
+
+      {/* タブ切り替え */}
+      {layout === "tabs" && (
+        <div>
+          <div className="mb-4 flex border-b">
+            <button
+              type="button"
+              onClick={() => setActiveTab("preview")}
+              className={cn(
+                "px-4 py-2 text-sm font-medium",
+                activeTab === "preview"
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              プレビュー
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("editor")}
+              className={cn(
+                "px-4 py-2 text-sm font-medium",
+                activeTab === "editor"
+                  ? "border-b-2 border-primary text-primary"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              エディタ
+            </button>
+          </div>
+          {activeTab === "preview" ? previewPanel : editorPanel}
+        </div>
+      )}
+    </div>
   )
 }
