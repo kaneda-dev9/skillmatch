@@ -27,81 +27,37 @@ export function ProposalEditor({
   const [error, setError] = useState<string | null>(null)
   const [layout, setLayout] = useState<"split" | "tabs">("split")
   const [activeTab, setActiveTab] = useState<"preview" | "editor">("preview")
-  const [generatingPdf, setGeneratingPdf] = useState(false)
+  function handleDownloadPdf() {
+    const html = content
+      .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+      .replace(/^- (.+)$/gm, "<li>$1</li>")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n\n/g, "<br><br>")
+      .replace(/\n/g, "<br>")
 
-  async function handleDownloadPdf() {
-    setGeneratingPdf(true)
-    try {
-      const { jsPDF } = await import("jspdf")
-      const doc = new jsPDF({ unit: "mm", format: "a4" })
+    const printWindow = window.open("", "_blank")
+    if (!printWindow) return
 
-      const pageWidth = doc.internal.pageSize.getWidth()
-      const margin = 15
-      const maxWidth = pageWidth - margin * 2
-      let y = margin
-
-      const lines = content.split("\n")
-
-      for (const line of lines) {
-        // ページ送り
-        if (y > doc.internal.pageSize.getHeight() - margin) {
-          doc.addPage()
-          y = margin
-        }
-
-        if (line.startsWith("# ")) {
-          doc.setFontSize(18)
-          doc.setFont("helvetica", "bold")
-          const text = line.replace(/^# /, "")
-          doc.text(text, margin, y)
-          y += 10
-        } else if (line.startsWith("## ")) {
-          doc.setFontSize(14)
-          doc.setFont("helvetica", "bold")
-          const text = line.replace(/^## /, "")
-          y += 4
-          doc.text(text, margin, y)
-          y += 8
-        } else if (line.startsWith("### ")) {
-          doc.setFontSize(12)
-          doc.setFont("helvetica", "bold")
-          const text = line.replace(/^### /, "")
-          y += 2
-          doc.text(text, margin, y)
-          y += 7
-        } else if (line.startsWith("- ")) {
-          doc.setFontSize(10)
-          doc.setFont("helvetica", "normal")
-          const text = `• ${line.replace(/^- /, "")}`
-          const wrapped = doc.splitTextToSize(text, maxWidth - 5)
-          doc.text(wrapped, margin + 3, y)
-          y += wrapped.length * 5
-        } else if (line.startsWith("---")) {
-          y += 2
-          doc.setDrawColor(200)
-          doc.line(margin, y, pageWidth - margin, y)
-          y += 4
-        } else if (line.trim() === "") {
-          y += 3
-        } else {
-          doc.setFontSize(10)
-          doc.setFont("helvetica", "normal")
-          const clean = line.replace(/\*\*(.+?)\*\*/g, "$1")
-          const wrapped = doc.splitTextToSize(clean, maxWidth)
-          for (const wline of wrapped) {
-            if (y > doc.internal.pageSize.getHeight() - margin) {
-              doc.addPage()
-              y = margin
-            }
-            doc.text(wline, margin, y)
-            y += 5
-          }
-        }
-      }
-
-      doc.save("proposal.pdf")
-    } finally {
-      setGeneratingPdf(false)
+    printWindow.document.write(`<!DOCTYPE html>
+<html><head>
+<title>提案書</title>
+<style>
+  body { font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif; font-size: 14px; line-height: 1.8; color: #1a1a1a; padding: 40px; max-width: 800px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 16px; }
+  h2 { font-size: 18px; margin: 24px 0 12px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+  h3 { font-size: 16px; margin: 16px 0 8px; }
+  li { margin-left: 20px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 13px; }
+  th { background: #f5f5f5; font-weight: 600; }
+  @media print { body { padding: 0; } }
+</style>
+</head><body>${html}</body></html>`)
+    printWindow.document.close()
+    printWindow.onload = () => {
+      printWindow.print()
     }
   }
 
@@ -194,9 +150,9 @@ export function ProposalEditor({
     <div>
       {/* ツールバー: PDF + レイアウト切り替え */}
       <div className="mb-4 flex items-center justify-end gap-3">
-        <Button onClick={handleDownloadPdf} variant="outline" size="sm" disabled={generatingPdf}>
+        <Button onClick={handleDownloadPdf} variant="outline" size="sm">
           <Download className="mr-1.5 h-4 w-4" />
-          {generatingPdf ? "生成中..." : "PDF ダウンロード"}
+          PDF ダウンロード
         </Button>
         <div className="flex rounded-lg border p-0.5">
           <button
