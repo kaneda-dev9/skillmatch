@@ -25,7 +25,7 @@ export default async function MatchingResultPage({ params }: PageProps) {
   const { data: matches, error } = await getMatchResults(projectId)
 
   // 各マッチの提案書IDを取得
-  const matchIds = (matches ?? []).map((m) => m.id)
+  const matchIds = (matches ?? []).map((m: { id: string }) => m.id)
   let proposalMap: Record<string, string> = {}
   if (matchIds.length > 0) {
     const { data: proposals } = await supabase
@@ -33,7 +33,7 @@ export default async function MatchingResultPage({ params }: PageProps) {
       .select("id, match_id")
       .in("match_id", matchIds)
     if (proposals) {
-      proposalMap = Object.fromEntries(proposals.map((p) => [p.match_id, p.id]))
+      proposalMap = Object.fromEntries(proposals.map((p: { match_id: string; id: string }) => [p.match_id, p.id]))
     }
   }
 
