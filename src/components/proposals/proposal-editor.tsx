@@ -30,10 +30,18 @@ export function ProposalEditor({
   function handleDownloadPdf() {
     const html = markdownToHtml(content)
 
-    const printWindow = window.open("", "_blank")
-    if (!printWindow) return
+    const iframe = document.createElement("iframe")
+    iframe.style.position = "fixed"
+    iframe.style.left = "-9999px"
+    iframe.style.width = "0"
+    iframe.style.height = "0"
+    document.body.appendChild(iframe)
 
-    printWindow.document.write(`<!DOCTYPE html>
+    const doc = iframe.contentDocument
+    if (!doc) return
+
+    doc.open()
+    doc.write(`<!DOCTYPE html>
 <html><head>
 <title>提案書</title>
 <style>
@@ -48,9 +56,11 @@ export function ProposalEditor({
   @media print { body { padding: 0; } }
 </style>
 </head><body>${html}</body></html>`)
-    printWindow.document.close()
-    printWindow.onload = () => {
-      printWindow.print()
+    doc.close()
+
+    iframe.onload = () => {
+      iframe.contentWindow?.print()
+      setTimeout(() => document.body.removeChild(iframe), 1000)
     }
   }
 
