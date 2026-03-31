@@ -1,4 +1,5 @@
 import { Briefcase, FileText, Target, Users } from "lucide-react"
+import { SeedDemoButton } from "@/components/dashboard/seed-demo-button"
 import { Card, CardContent } from "@/components/ui/card"
 import { createClient } from "@/lib/supabase/server"
 
@@ -21,7 +22,10 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">ダッシュボード</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">ダッシュボード</h1>
+        <SeedDemoButton hasData={(engineers.count ?? 0) + (projects.count ?? 0) > 0} />
+      </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label} className="cursor-pointer transition-shadow hover:shadow-md">
