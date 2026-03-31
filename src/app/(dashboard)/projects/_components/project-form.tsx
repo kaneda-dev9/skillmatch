@@ -140,7 +140,7 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
               <Label htmlFor="status">ステータス</Label>
               <Select value={status} onValueChange={(v) => v && setStatus(v as "open" | "closed")}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue>{status === "open" ? "募集中" : "終了"}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="open">募集中</SelectItem>
@@ -183,7 +183,16 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
               />
               <Select value={skill.level} onValueChange={(v) => v && updateSkill(i, "level", v)}>
                 <SelectTrigger className="w-40">
-                  <SelectValue />
+                  <SelectValue>
+                    {
+                      {
+                        beginner: "初級",
+                        intermediate: "中級",
+                        advanced: "上級",
+                        expert: "エキスパート",
+                      }[skill.level]
+                    }
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="beginner">初級</SelectItem>
@@ -192,14 +201,17 @@ export function ProjectForm({ project, mode }: ProjectFormProps) {
                   <SelectItem value="expert">エキスパート</SelectItem>
                 </SelectContent>
               </Select>
-              <Input
-                type="number"
-                min={0}
-                placeholder="年数"
-                value={skill.years}
-                onChange={(e) => updateSkill(i, "years", Number(e.target.value))}
-                className="w-20"
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  type="number"
+                  min={0}
+                  placeholder="0"
+                  value={skill.years}
+                  onChange={(e) => updateSkill(i, "years", Number(e.target.value))}
+                  className="w-16"
+                />
+                <span className="text-sm text-muted-foreground">年</span>
+              </div>
               <Button variant="ghost" size="icon-xs" onClick={() => removeSkill(i)}>
                 <Trash2 className="h-4 w-4" />
               </Button>

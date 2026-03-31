@@ -4,6 +4,8 @@
 
 Claude と OpenAI Embeddings を組み合わせたハイブリッド AI で、案件に最適なエンジニアを自動マッチングし、提案書をリアルタイム生成します。
 
+**本番URL:** https://skillmatch-seven.vercel.app
+
 ---
 
 ## 主な機能
